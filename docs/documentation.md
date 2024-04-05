@@ -5,7 +5,7 @@ license: LGPL 2.1
 version: 1.0.0-draft3
 min_python: 3.6
 min_freecad: 0.20
-date: 2024-04-05 10:32:10.232815
+date: 2024-04-05 11:13:34.747400
 geometry: "margin=2cm"
 ---
 
@@ -14,7 +14,7 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-04-05 10:32:10.239552                        |
+| __generated__     | 2024-04-05 11:13:34.754397                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
@@ -115,6 +115,7 @@ geometry: "margin=2cm"
 
 
 <p style="page-break-after: always; break-after: page;"></p>
+
 # Preliminaries
 
 ## Disclaimer
@@ -167,6 +168,7 @@ of the basic usage of it.
 
 
 <p style="page-break-after: always; break-after: page;"></p>
+
 # Features
 
 - [x] Declarative DataProxy (@proxy)
@@ -199,6 +201,7 @@ of the basic usage of it.
 
 
 <p style="page-break-after: always; break-after: page;"></p>
+
 # General Scripted Object Architecture
 
 Despite the widespread use of the name *FeaturePythonObject*, this is a 
@@ -384,6 +387,7 @@ obj = MyCustomObjectProxy.create(name="MyThing")
 
 
 <p style="page-break-after: always; break-after: page;"></p>
+
 # DataProxy Lifecycle
 
 Every `DataProxy` object has a lifecycle. You can observe state changes 
@@ -670,6 +674,7 @@ Return True if your `Proxy` in a state that requires *recompute*
 
 
 <p style="page-break-after: always; break-after: page;"></p>
+
 # Properties
 
 The main interaction between your `ScriptedObject` and the user is by managing property 
@@ -1248,6 +1253,7 @@ class MyScriptedObjectClass:
 
 
 <p style="page-break-after: always; break-after: page;"></p>
+
 # FreeCAD Preferences
 
 You can read and write FreeCAD preferences from your code using a simple

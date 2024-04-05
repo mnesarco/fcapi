@@ -28,6 +28,7 @@
 
 
 ~:doc:page-break:~
+
 # Preliminaries
 
 ## Disclaimer
@@ -80,6 +81,7 @@ of the basic usage of it.
 
 
 ~:doc:page-break:~
+
 # Features
 
 - [x] Declarative DataProxy (@proxy)
@@ -112,6 +114,7 @@ of the basic usage of it.
 
 
 ~:doc:page-break:~
+
 # General Scripted Object Architecture
 
 Despite the widespread use of the name *FeaturePythonObject*, this is a 
@@ -299,6 +302,7 @@ obj = MyCustomObjectProxy.create(name="MyThing")
 
 
 ~:doc:page-break:~
+
 # DataProxy Lifecycle
 
 Every `DataProxy` object has a lifecycle. You can observe state changes 
@@ -589,6 +593,7 @@ Return True if your `Proxy` in a state that requires *recompute*
 
 
 ~:doc:page-break:~
+
 # Properties
 
 The main interaction between your `ScriptedObject` and the user is by managing property 
@@ -1186,6 +1191,7 @@ class MyScriptedObjectClass:
 
 
 ~:doc:page-break:~
+
 # FreeCAD Preferences
 
 You can read and write FreeCAD preferences from your code using a simple
