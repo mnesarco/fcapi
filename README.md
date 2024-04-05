@@ -24,7 +24,6 @@ of the basic usage of it.
 ## Documentation
 
 * [docs/documentation.md](docs/documentation.md)
-* [docs/documentation.html](docs/documentation.html)
 * [docs/documentation.pdf](docs/documentation.pdf)
 
 ## Status
