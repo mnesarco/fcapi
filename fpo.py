@@ -21,7 +21,7 @@ __author__          = "Frank David Martínez Muñoz"
 __copyright__       = "(c) 2024 Frank David Martínez Muñoz."
 __license__         = "LGPL 2.1"
 __version__         = "1.0.0-draft3"
-__min_python__      = "3.6"
+__min_python__      = "3.7"
 __min_freecad__     = "0.20"
 
 
@@ -39,13 +39,12 @@ __min_freecad__     = "0.20"
 # General imports
 # ──────────────────────────────────────────────────────────────────────────────
 from dataclasses import dataclass
-from typing import Any, Tuple, Callable, Dict, Iterable, List, Set, Union
+from typing import Any, Tuple, Callable, Dict, Iterable, List, Set, Union, NewType
 from enum import IntEnum, Enum
 import inspect
 import re, sys, traceback, textwrap
 from pathlib import Path
 from warnings import warn
-regex = re.compile
 
 
 #: Conditional imports
@@ -83,21 +82,25 @@ print_log.__doc__ = "Print into the FreeCAD console with info level."
 
 
 #: FreeCAD defined c++ types (Just for the sake of documentation)
+#: fake type hints compatible with python 3.6+
 #: ─────────────────────────────────────────────────────────────────────────────
-FeatureObject = Any                             # FreeCAD Feature Object
-ViewObject = Any                                # FreeCAD ViewProvider Object
-ObjectRef = Union[FeatureObject, ViewObject]
-Document = Any                                  # FreeCAD Document
-QMenu = Any                                     # Qt Menu
-QMessageBox = Any                               # Qt MessageBox
-ParameterGrp = Any                              # Preferences Group
+DocumentObject = NewType('DocumentObject', object)    # FreeCAD Feature Object
+ViewObject = NewType('ViewObject', object)            # FreeCAD ViewProvider Object
+ObjectRef = NewType('ObjectRef', object)
+Document = NewType('Document', object)                # FreeCAD Document
+QMenu = NewType('QMenu', object)                      # Qt Menu
+QMessageBox = NewType('QMessageBox', object)          # Qt MessageBox
+ParameterGrp = NewType('ParameterGrp', object)        # Preferences Group
+PartDesign_Body = NewType('PartDesign_Body', object)  # PartDesign.Body class
+Shape = NewType('Shape', object)                      # Part.Shape class
 
 
 #: User defined python Types (Just for the sake of documentation)
+#: fake type hints compatible with python 3.6+
 #: ─────────────────────────────────────────────────────────────────────────────
-DataProxy = Any  # Python proxy of FeatureObject
-ViewProxy = Any  # Python proxy of ViewObject
-Proxy = Union[DataProxy, ViewProxy]
+DataProxy = NewType('DataProxy', object)  # Python proxy of DocumentObject
+ViewProxy = NewType('ViewProxy', object)  # Python proxy of ViewObject
+Proxy = NewType('Proxy', object)
 
 
 #: Defined symbols
@@ -350,7 +353,7 @@ class EditMode(_DocIntEnum):
 class Property:
     '''
     Proxy object to create, access and manipulate remote freecad properties 
-    in FeatureObject and ViewObject instances.
+    in DocumentObject and ViewObject instances.
 
     Ref: https://wiki.freecad.org/FeaturePython_Custom_Properties
     '''
@@ -611,7 +614,7 @@ class Part_AttachExtensionPython(ExtensionSupport):
     '''Extension manager of: Part::AttachExtensionPython'''
     
     # ──────────
-    def on_execute(self, proxy: DataProxy, obj: FeatureObject, meta: 'TypeMeta'):
+    def on_execute(self, proxy: DataProxy, obj: DocumentObject, meta: 'TypeMeta'):
         obj.positionBySupport()
 
 
@@ -630,7 +633,7 @@ class App_LinkBaseExtensionPython(ExtensionSupport):
         return link_property
 
     # ──────────
-    def on_start(self, proxy: DataProxy, obj: FeatureObject, meta: 'TypeMeta'):
+    def on_start(self, proxy: DataProxy, obj: DocumentObject, meta: 'TypeMeta'):
         super().on_start(proxy, obj, meta)
         mapping = {
             self.resolve_link_prop(prop.link_property, prop.name): prop.name 
@@ -662,7 +665,7 @@ class TypeMeta:
     view_proxy: ViewProxy                   # associated ViewProxy
     extensions: Set[ExtensionSupport]       # Added extensions
     version: int                            # Proxy versions for migrations support
-    object_type: str                        # Type of FeatureObject
+    object_type: str                        # Type of DocumentObject
     subtype: str                            # Subtype of Proxy
     base_dir: Path                          # Directory where the class is declared
     view_provider_name_override: str        # Forced type of the view provider
@@ -1068,7 +1071,7 @@ def t_proxy_constructor(overridden: Any, meta: TypeMeta):
 def t_proxy_remove(overridden: Any, meta: TypeMeta):
     call = getattr(meta.cls, _ON_REMOVE, None)
     if call:
-        def handler(self, fp: FeatureObject):
+        def handler(self, fp: DocumentObject):
             return call(self, fp)
         return handler
 
@@ -1090,7 +1093,7 @@ def t_proxy_set_version(overridden: Any, meta: TypeMeta):
 #$ ─────────────────────────────────────────────────────────────────────────────
 @template(name='Object')
 def t_proxy_object(overridden: Any, meta: TypeMeta):
-    def handler(self) -> FeatureObject:
+    def handler(self) -> DocumentObject:
         '''Returns FreeCAD internal Feature Object'''
         return self.__so_ref__
     return property(handler)
@@ -1110,7 +1113,7 @@ def t_proxy_vobject(overridden: Any, meta: TypeMeta):
         name='attach',
         override_error_msg=f"Use {_ON_ATTACH} instead")
 def t_proxy_attach(overridden: Any, meta: TypeMeta):
-    def handler(self, fp: FeatureObject):
+    def handler(self, fp: DocumentObject):
         assert fp.Proxy == self
         self.__so_ref__ = fp
         self.__so_old__ = dict()
@@ -1165,7 +1168,7 @@ def t_proxy_create(overridden: Any, meta: TypeMeta):
 #$ ─────────────────────────────────────────────────────────────────────────────
 @template(name='rebind')
 def t_proxy_rebind(overridden: Any, meta: TypeMeta):
-    def rebind(fp: FeatureObject):
+    def rebind(fp: DocumentObject):
         """Recreate the proxy objects and rebind them to FreeCAD objects"""
         proxy = meta.cls()
         proxy.__so_ref__ = fp
@@ -1186,7 +1189,7 @@ def t_proxy_rebind(overridden: Any, meta: TypeMeta):
         name='onDocumentRestored',
         override_error_msg=f"Use {_ON_RESTORE} instead")
 def t_proxy_restore(overridden: Any, meta: TypeMeta):
-    def handler(self, fp: FeatureObject):
+    def handler(self, fp: DocumentObject):
         self.__so_state__ = FeatureState.Restoring
         self.__so_ref__ = fp
         self.__so_old__ = dict()
@@ -1213,7 +1216,7 @@ def t_proxy_restore(overridden: Any, meta: TypeMeta):
         name='execute',
         override_error_msg=f"Use {_ON_EXECUTE} instead")
 def t_proxy_execute(overridden: Any, meta: TypeMeta):
-    def handler(self, fp: FeatureObject):
+    def handler(self, fp: DocumentObject):
         meta.apply_extensions(self, fp, _ON_EXECUTE)
         _call(self, _ON_EXECUTE, fp)
     return handler
@@ -1224,7 +1227,7 @@ def t_proxy_execute(overridden: Any, meta: TypeMeta):
         name='onBeforeChange',
         override_error_msg=f"Use {_ON_BEFORE_CHANGE} instead")
 def t_proxy_before_change(overridden: Any, meta: TypeMeta):
-    def handler(self, fp: FeatureObject, prop_name: str):
+    def handler(self, fp: DocumentObject, prop_name: str):
         if getattr(self, '__so_state__', None) == FeatureState.Active:
             old_value = getattr(fp, prop_name, None)
             self.__so_old__[prop_name] = old_value
@@ -1237,7 +1240,7 @@ def t_proxy_before_change(overridden: Any, meta: TypeMeta):
         name='onChanged',
         override_error_msg=f"User {_ON_CHANGE} instead")
 def t_proxy_change(overridden: Any, meta: TypeMeta):
-    def handler(self, fp: FeatureObject, prop_name: str):
+    def handler(self, fp: DocumentObject, prop_name: str):
         if getattr(self, '__so_state__', None) == FeatureState.Active:
             new_value = getattr(fp, prop_name)
             old_value = self.__so_old__.get(prop_name, None)
@@ -1335,7 +1338,7 @@ def t_loads(overridden: Any, meta: TypeMeta):
 def t_proxy_dirty(overridden: Any, meta: TypeMeta):
     get = getattr(meta.cls, _IS_DIRTY, None)
     if get:
-        def handler(self, fp: FeatureObject):
+        def handler(self, fp: DocumentObject):
             return get(self, fp)
         return handler
 
@@ -1347,7 +1350,7 @@ def t_proxy_dirty(overridden: Any, meta: TypeMeta):
                             "in the decorator instead")
 def t_proxy_view_provider_name_override(overridden: Any, meta: TypeMeta):
     if meta.view_provider_name_override:
-        def handler(self, fp: FeatureObject):
+        def handler(self, fp: DocumentObject):
             return meta.view_provider_name_override
         return handler
     
@@ -1356,7 +1359,7 @@ def t_proxy_view_provider_name_override(overridden: Any, meta: TypeMeta):
         view_meta = meta.view_proxy.__so_meta__
 
     if view_meta and view_meta.view_provider_name_override:
-        def handler(self, fp: FeatureObject):
+        def handler(self, fp: DocumentObject):
             return view_meta.view_provider_name_override
         return handler
 
@@ -1577,14 +1580,14 @@ def t_view_proxy_get_def_dm(overridden: Any, meta: TypeMeta):
 def t_view_proxy_object_change(overridden: Any, meta: TypeMeta):
     call = getattr(meta.cls, _ON_OBJECT_CHANGE, None)
     if call:
-        def handler(self, obj: FeatureObject, prop_name: str):
+        def handler(self, obj: DocumentObject, prop_name: str):
             return call(self, obj, prop_name)
         return handler
 
 #$ ─────────────────────────────────────────────────────────────────────────────
 @template(name='Object')
 def t_view_proxy_object(overridden: Any, meta: TypeMeta):
-    def handler(self) -> FeatureObject:
+    def handler(self) -> DocumentObject:
         '''Returns FreeCAD internal Feature Object'''
         return self.__so_ref__.Object
     return property(handler)
@@ -1661,7 +1664,7 @@ def _migrate_class(self,
                    meta: MigrationMeta, 
                    version: int, 
                    current_version: int, 
-                   fp: FeatureObject):
+                   fp: DocumentObject):
     old_v_id = f'{meta.old.__name__}:{version}'
     new_v_id = f'{meta.current.__name__}:{current_version}'
     print_log(f"Document contains a different version of {old_v_id}. ",
@@ -1676,7 +1679,7 @@ def _migrate_upgrade(self,
                      meta: MigrationMeta, 
                      version: int, 
                      current_version: int, 
-                     fp: FeatureObject):
+                     fp: DocumentObject):
     old_v_id = f'{meta.current.__name__}:{version}'
     print_log(f"Document contains an older version of {old_v_id}. ",
               f"Current version is {current_version}")
@@ -1690,7 +1693,7 @@ def _migrate_downgrade(self,
                        meta: MigrationMeta, 
                        version: int, 
                        current_version: int, 
-                       fp: FeatureObject):
+                       fp: DocumentObject):
     old_v_id = f'{meta.current.__name__}:{version}'
     print_log(f"Document contains a newer version of {old_v_id}. ",
               f"Current version is {current_version}")
@@ -1704,7 +1707,7 @@ def _try_migration(self,
                    meta: MigrationMeta, 
                    version: int, 
                    current_version: int, 
-                   fp: FeatureObject, 
+                   fp: DocumentObject, 
                    action: Callable):
     old_v_id = f'{meta.old.__name__}:{version}'
     new_v_id = f'{meta.current.__name__}:{current_version}'    
@@ -1807,15 +1810,20 @@ def PropertyOptions(
 # └───────────────────────────────────────────────────────────────────────────┘
 
 # ──────────────────────────────────────────────────────────────────────────────
-def get_pd_active_body():
+def get_pd_active_body() -> PartDesign_Body:
+    """
+    Retrieve the active PartDesign Body if any
+
+    :return PartDesign_Body: Active Body
+    """
     if Gui.ActiveDocument:
         if Gui.ActiveDocument.ActiveView:
             return Gui.ActiveDocument.ActiveView.getActiveObject("pdbody")
 
 # ──────────────────────────────────────────────────────────────────────────────
-def set_pd_shape(fp: FeatureObject, shape):
+def set_pd_shape(fp: DocumentObject, shape: Shape) -> None:
     """
-    Prepare the shape for usage in PartDesign and Set it.
+    Prepare the shape for usage in PartDesign and sets `BaseFeature` and `AddSubShape`
     """
     # Validate type
     if not fp.TypeId.startswith('PartDesign::'):
@@ -1884,7 +1892,7 @@ def get_selection(*args) -> Tuple:
     regex are supported for type matching and '*' is a general wildcard:
     
     ```python
-    ok, axis, part, other = get_selection('PartDesign::Line', regex('Part::.*'), '*')
+    ok, axis, part, other = get_selection('PartDesign::Line', re.compile('Part::.*'), '*')
     if ok:
         ...
     ```
@@ -1921,7 +1929,7 @@ def get_selection(*args) -> Tuple:
         elif isinstance(arg, re.Pattern):
             return arg.fullmatch
         elif isinstance(arg, (tuple, list)):
-            return regex("|".join(arg)).fullmatch
+            return re.compile("|".join(arg)).fullmatch
 
     matchers = tuple(matcher(arg) for arg in args)
     for obj in selection:

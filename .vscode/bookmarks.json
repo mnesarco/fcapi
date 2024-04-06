@@ -24,72 +24,72 @@
 					"label": "Fake types"
 				},
 				{
-					"line": 104,
+					"line": 107,
 					"column": 0,
 					"label": "Symbol constants"
 				},
 				{
-					"line": 147,
+					"line": 150,
 					"column": 0,
 					"label": "Supported property types"
 				},
 				{
-					"line": 191,
+					"line": 194,
 					"column": 0,
 					"label": "Utility functions"
 				},
 				{
-					"line": 349,
+					"line": 352,
 					"column": 0,
 					"label": "Property"
 				},
 				{
-					"line": 463,
+					"line": 466,
 					"column": 0,
 					"label": "Display Mode"
 				},
 				{
-					"line": 650,
+					"line": 653,
 					"column": 0,
 					"label": "Type Meta"
 				},
 				{
-					"line": 797,
+					"line": 800,
 					"column": 0,
 					"label": "Preference"
 				},
 				{
-					"line": 911,
+					"line": 914,
 					"column": 0,
 					"label": "proxy decorator"
 				},
 				{
-					"line": 963,
+					"line": 966,
 					"column": 0,
 					"label": "view_proxy decorator"
 				},
 				{
-					"line": 1043,
+					"line": 1046,
 					"column": 0,
 					"label": "DataProxy Templates"
 				},
 				{
-					"line": 1364,
+					"line": 1367,
 					"column": 0,
 					"label": "ViewProxy templates"
 				},
 				{
-					"line": 1602,
+					"line": 1605,
 					"column": 0,
 					"label": "Migrations"
 				},
 				{
-					"line": 1731,
+					"line": 1734,
 					"column": 0,
 					"label": "Module init"
 				},
 				{
-					"line": 1805,
+					"line": 1808,
 					"column": 0,
 					"label": "Global user functions"
 				}

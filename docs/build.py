@@ -204,12 +204,13 @@ def comment_md(doc):
 # ──────────────────────────────────────────────────────────────────────────────
 def function_md(name: str, func, header_level=3):
     name = re.sub(r'__(.*)', '\\__$1', name)
+    sig = str(inspect.signature(func)).replace('fpo.', '')
     block = f"""
     
     {'#' * header_level} *function:* __{name}__
 
     ```python
-    def {name}{inspect.signature(func)}
+    def {name}{sig}
     ```
     """
     return dedent(block) + comment_md(func.__doc__ or '')

@@ -5,9 +5,17 @@
     "cSpell.words": [
         "freecad",
         "frenet",
+        "getstate",
+        "hasattr",
         "Martínez",
         "Muñoz",
+        "pdbody",
+        "pivy",
+        "proxyfied",
+        "scriptable",
+        "setstate",
         "tmpl",
+        "TransformManip",
         "unsetup",
         "vobject",
         "wireframe"

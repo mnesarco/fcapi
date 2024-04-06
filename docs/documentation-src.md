@@ -651,8 +651,8 @@ def Property{__property_type__}(
 +               + returns the list of options                                  |
 | link_property | Key of the Link property (see [extensions](#extensions))     +
 +               + `App::LinkExtensionPython`                                   |
-| observer_func | Function to listen for property changes. You can also use the+
-+               + observer decorator.                                          |
+| observer_func | Function to listen for property changes. You can also use    +
++               + the observer decorator.                                      |
 :/table
 
 #### Examples
@@ -738,7 +738,7 @@ class MyMagicProxy
 ### Property access
 
 All properties can be accessed from the `Proxy` object using the declared
-property name. It is internally proxyed to the actual `DocumentObject`.
+property name. It is internally proxyfied to the actual `DocumentObject`.
 
 
 ```python
@@ -915,7 +915,7 @@ Returns True if this VP accepts dropping of sub-elements
 ## can_drag_object
 
 ```python
-def can_drag_object(self, obj) -> bool
+def can_drag_object(self, obj: DocumentObject) -> bool
 ```
 
 Returns True if this VP accepts dragging of the dragged `obj`
@@ -923,7 +923,7 @@ Returns True if this VP accepts dragging of the dragged `obj`
 ## can_drop_object
 
 ```python
-def can_drop_object(self, obj) -> bool
+def can_drop_object(self, obj: DocumentObject) -> bool
 ```
 
 Returns True if this VP accepts dropping of the incoming `obj`
@@ -978,7 +978,7 @@ corresponding decorators `@proxy` and `@view_proxy` respectively.
 ```
 
 Converts a user defined class into a full blown `DataProxy` with all of the
-lifecycle management, versioning, proxied properties, extensions, etc...
+lifecycle management, versioning, proxyfied properties, extensions, etc...
 
 :table
 | Argument         | Description                                              |
@@ -1001,7 +1001,7 @@ lifecycle management, versioning, proxied properties, extensions, etc...
 ## @view_proxy
 
 Converts a user defined class into a full blown `ViewProxy` with all of the
-lifecycle management, proxied properties, extensions, display mode builders, 
+lifecycle management, proxyfied properties, extensions, display mode builders, 
 etc...
 
 ```python 
@@ -1322,6 +1322,9 @@ they are used in the examples.
 
 ~:func:print_err:~
 
+~:func:get_pd_active_body:~
+
+~:func:set_pd_shape:~
 
 ; ------------------------------------------------------------------------------
 

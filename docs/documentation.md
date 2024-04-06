@@ -3,9 +3,9 @@ author: Frank David Martínez Muñoz
 copyright: (c) 2024 Frank David Martínez Muñoz.
 license: LGPL 2.1
 version: 1.0.0-draft3
-min_python: 3.6
+min_python: 3.7
 min_freecad: 0.20
-date: 2024-04-05 11:13:34.747400
+date: 2024-04-05 22:56:19.241400
 geometry: "margin=2cm"
 ---
 
@@ -14,12 +14,12 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-04-05 11:13:34.754397                        |
+| __generated__     | 2024-04-05 22:56:19.248518                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
 | __version__       | 1.0.0-draft3                                      |
-| __min_python__    | 3.6                                               |
+| __min_python__    | 3.7                                               |
 | __min_freecad__   | 0.20                                              |
 
 
@@ -730,7 +730,7 @@ def Property{__property_type__}(
 | enum          | Only valid for `PropertyEnumeration`. The enum type.         |
 | options       | Only valid for `PropertyOptions`. A function that            returns the list of options                                  |
 | link_property | Key of the Link property (see [extensions](#extensions))     `App::LinkExtensionPython`                                   |
-| observer_func | Function to listen for property changes. You can also use theobserver decorator.                                          |
+| observer_func | Function to listen for property changes. You can also use    the observer decorator.                                      |
 
 
 #### Examples
@@ -809,7 +809,7 @@ class MyMagicProxy
 ### Property access
 
 All properties can be accessed from the `Proxy` object using the declared
-property name. It is internally proxyed to the actual `DocumentObject`.
+property name. It is internally proxyfied to the actual `DocumentObject`.
 
 
 ```python
@@ -982,7 +982,7 @@ Returns True if this VP accepts dropping of sub-elements
 ## can_drag_object
 
 ```python
-def can_drag_object(self, obj) -> bool
+def can_drag_object(self, obj: DocumentObject) -> bool
 ```
 
 Returns True if this VP accepts dragging of the dragged `obj`
@@ -990,7 +990,7 @@ Returns True if this VP accepts dragging of the dragged `obj`
 ## can_drop_object
 
 ```python
-def can_drop_object(self, obj) -> bool
+def can_drop_object(self, obj: DocumentObject) -> bool
 ```
 
 Returns True if this VP accepts dropping of the incoming `obj`
@@ -1036,7 +1036,7 @@ corresponding decorators `@proxy` and `@view_proxy` respectively.
 ```
 
 Converts a user defined class into a full blown `DataProxy` with all of the
-lifecycle management, versioning, proxied properties, extensions, etc...
+lifecycle management, versioning, proxyfied properties, extensions, etc...
 
 
 | Argument         | Description                                              |
@@ -1052,7 +1052,7 @@ lifecycle management, versioning, proxied properties, extensions, etc...
 ## @view_proxy
 
 Converts a user defined class into a full blown `ViewProxy` with all of the
-lifecycle management, proxied properties, extensions, display mode builders, 
+lifecycle management, proxyfied properties, extensions, display mode builders, 
 etc...
 
 ```python 
@@ -1390,7 +1390,7 @@ if ok:
 regex are supported for type matching and '*' is a general wildcard:
 
 ```python
-ok, axis, part, other = get_selection('PartDesign::Line', regex('Part::.*'), '*')
+ok, axis, part, other = get_selection('PartDesign::Line', re.compile('Part::.*'), '*')
 if ok:
     ...
 ```
@@ -1418,7 +1418,7 @@ is a boolean that indicate if the selection matches the patterns.
 ### *function:* __set_immutable_prop__
 
 ```python
-def set_immutable_prop(obj: Any, name: str, value: Any) -> None
+def set_immutable_prop(obj: ObjectRef, name: str, value: Any) -> None
 ```
 Force update a property with Immutable status. It temporarily removes the
 immutable flag, sets the value and restore the flag if required.
@@ -1479,6 +1479,26 @@ Print into the FreeCAD console with info level.
 def print_err(*args)
 ```
 Print into the FreeCAD console with error level.
+
+
+### *function:* __get_pd_active_body__
+
+```python
+def get_pd_active_body() -> PartDesign_Body
+```
+Retrieve the active PartDesign Body if any
+
+| Return type    | Description                                       |
+|----------------|---------------------------------------------------|
+| PartDesign_Body| Active Body                                       |
+
+
+### *function:* __set_pd_shape__
+
+```python
+def set_pd_shape(fp: DocumentObject, shape: Shape) -> None
+```
+Prepare the shape for usage in PartDesign and sets `BaseFeature` and `AddSubShape`
 
 
 # Compatibility notes

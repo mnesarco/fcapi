@@ -44,6 +44,7 @@ def create_cube_pd():
     body = get_pd_active_body()
     if not body:
         print_err("No active body.")
+        return
     
     cube = PDMyCubeAdd.create(name="Cube")
     body.addObject(cube)
