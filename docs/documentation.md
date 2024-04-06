@@ -5,7 +5,7 @@ license: LGPL 2.1
 version: 1.0.0-draft3
 min_python: 3.7
 min_freecad: 0.20
-date: 2024-04-05 23:23:46.272653
+date: 2024-04-05 23:29:42.516978
 geometry: "margin=2cm"
 ---
 
@@ -14,7 +14,7 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-04-05 23:23:46.282299                        |
+| __generated__     | 2024-04-05 23:29:42.524114                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
@@ -1498,7 +1498,7 @@ Retrieve the active PartDesign Body if any
 ```python
 def set_pd_shape(fp: DocumentObject, shape: Shape) -> None
 ```
-Prepare the shape for usage in PartDesign and sets `BaseFeature` and `AddSubShape`
+Prepare the shape for usage in PartDesign and sets `Shape` and `AddSubShape`
 
 
 # Compatibility notes
