@@ -34,10 +34,10 @@
 ## Disclaimer
 
 All of the following information is the result of my own research and usage of 
-the FreeCAD's Python APIs along several years. It reflects my very own view and 
-coding style. All the content is based on official docs, forum discussions, 
-development of my own extensions, reading code of existing extensions 
-and FreeCAD sources.
+the FreeCAD's Python APIs along several years. It reflects my very own view, 
+coding style and limited understanding of FreeCAD internals. All the content 
+is based on official docs, forum discussions, development of my own extensions, 
+reading code of existing extensions and FreeCAD sources.
 
 This document does not cover 100% of the API yet because there are still some 
 obscure methods that can be overridden from the Python Proxies but there is no
@@ -578,9 +578,7 @@ More optional methods called by FreeCAD to get some info from the Proxy
 def can_link_properties(self) -> bool
 ```
 
-Return True if your `Proxy` accepts linked properties 
-> [!NOTE]
-> to be confirmed as official documentation is not clear about this.
+Return true to cause PropertyView to show linked object's property
 
 ### is_dirty
 
@@ -588,7 +586,7 @@ Return True if your `Proxy` accepts linked properties
 def is_dirty(self) -> bool
 ```
 
-Return True if your `Proxy` in a state that requires *recompute*
+Return True if your `DataProxy` in a state that requires *recompute*
 
 
 

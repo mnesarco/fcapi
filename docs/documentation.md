@@ -5,7 +5,7 @@ license: LGPL 2.1
 version: 1.0.0-draft3
 min_python: 3.7
 min_freecad: 0.20
-date: 2024-04-05 23:29:42.516978
+date: 2024-04-06 11:30:29.350326
 geometry: "margin=2cm"
 ---
 
@@ -14,7 +14,7 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-04-05 23:29:42.524114                        |
+| __generated__     | 2024-04-06 11:30:29.357140                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
@@ -116,15 +116,16 @@ geometry: "margin=2cm"
 
 <p style="page-break-after: always; break-after: page;"></p>
 
+
 # Preliminaries
 
 ## Disclaimer
 
 All of the following information is the result of my own research and usage of 
-the FreeCAD's Python APIs along several years. It reflects my very own view and 
-coding style. All the content is based on official docs, forum discussions, 
-development of my own extensions, reading code of existing extensions 
-and FreeCAD sources.
+the FreeCAD's Python APIs along several years. It reflects my very own view, 
+coding style and limited understanding of FreeCAD internals. All the content 
+is based on official docs, forum discussions, development of my own extensions, 
+reading code of existing extensions and FreeCAD sources.
 
 This document does not cover 100% of the API yet because there are still some 
 obscure methods that can be overridden from the Python Proxies but there is no
@@ -169,6 +170,7 @@ of the basic usage of it.
 
 <p style="page-break-after: always; break-after: page;"></p>
 
+
 # Features
 
 - [x] Declarative DataProxy (@proxy)
@@ -201,6 +203,7 @@ of the basic usage of it.
 
 
 <p style="page-break-after: always; break-after: page;"></p>
+
 
 # General Scripted Object Architecture
 
@@ -387,6 +390,7 @@ obj = MyCustomObjectProxy.create(name="MyThing")
 
 
 <p style="page-break-after: always; break-after: page;"></p>
+
 
 # DataProxy Lifecycle
 
@@ -660,9 +664,7 @@ More optional methods called by FreeCAD to get some info from the Proxy
 def can_link_properties(self) -> bool
 ```
 
-Return True if your `Proxy` accepts linked properties 
-> [!NOTE]
-> to be confirmed as official documentation is not clear about this.
+Return true to cause PropertyView to show linked object's property
 
 ### is_dirty
 
@@ -670,10 +672,11 @@ Return True if your `Proxy` accepts linked properties
 def is_dirty(self) -> bool
 ```
 
-Return True if your `Proxy` in a state that requires *recompute*
+Return True if your `DataProxy` in a state that requires *recompute*
 
 
 <p style="page-break-after: always; break-after: page;"></p>
+
 
 # Properties
 
@@ -1253,6 +1256,7 @@ class MyScriptedObjectClass:
 
 
 <p style="page-break-after: always; break-after: page;"></p>
+
 
 # FreeCAD Preferences
 

@@ -137,7 +137,7 @@ def interpolate_macros(content: str, source: ast.Module, fpo: Any) -> str:
             if ident == 'date':
                 return f"{datetime.datetime.now()}"
             if ident == 'page-break':
-                return '<p style="page-break-after: always; break-after: page;"></p>'
+                return '<p style="page-break-after: always; break-after: page;"></p>\n'
         elif kind == 'a':
             return f"<a name='{ident}'></a>"
         elif kind == 'func':
@@ -215,6 +215,13 @@ def function_md(name: str, func, header_level=3):
     """
     return dedent(block) + comment_md(func.__doc__ or '')
 
+
+# Generate a function reference documentation
+# Reduce more than 3 consecutive blank lines to 3
+# ──────────────────────────────────────────────────────────────────────────────
+def clean_blank_lines(content: str) -> str:
+    return re.sub('\n\n\n\n+', '\n\n\n', content)
+
 # Main
 # ──────────────────────────────────────────────────────────────────────────────
 if __name__ == '__main__':
@@ -228,7 +235,7 @@ if __name__ == '__main__':
         content = remove_comments(content)
         content = fix_tables(content)
         content = interpolate_macros(content, source, fpo)
-        content = re.sub('\n\n\n\n+', '\n\n\n', content)
+        content = clean_blank_lines(content)
         with open(Path(base, 'documentation.md'), 'w') as out:
             out.write(content.strip())
 
