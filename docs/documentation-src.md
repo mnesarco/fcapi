@@ -829,10 +829,11 @@ Called when the user terminates editing. See [edit modes](#edit-modes)
 ## on_dbl_click
 
 ```python
-def on_dbl_click(self, vp: ViewObject) -> None
+def on_dbl_click(self, vp: ViewObject) -> bool
 ```
 
-Called when the user double clicks the Tree Node.
+Called when the user double clicks the Tree Node. Return True to tell the core 
+system that you handled the action already.
 
 ## on_context_menu
 
@@ -1389,6 +1390,7 @@ present in previous examples.
 | ex9_migrations.py    | Basic migration                          |       |
 | ex10_part_design.py  | Object compatible with PartDesign        |       +
                              ![ex10_part_design.py](ex10_part_design.png) |
+| ex11_undo_redo.py    | Transactional undo/redo aware code       |       |
 :/table
 
 

@@ -5,7 +5,7 @@ license: LGPL 2.1
 version: 1.0.0-draft3
 min_python: 3.7
 min_freecad: 0.20
-date: 2024-04-06 11:30:29.350326
+date: 2024-04-06 15:28:21.976938
 geometry: "margin=2cm"
 ---
 
@@ -14,7 +14,7 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-04-06 11:30:29.357140                        |
+| __generated__     | 2024-04-06 15:28:21.983854                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
@@ -902,10 +902,11 @@ Called when the user terminates editing. See [edit modes](#edit-modes)
 ## on_dbl_click
 
 ```python
-def on_dbl_click(self, vp: ViewObject) -> None
+def on_dbl_click(self, vp: ViewObject) -> bool
 ```
 
-Called when the user double clicks the Tree Node.
+Called when the user double clicks the Tree Node. Return True to tell the core 
+system that you handled the action already.
 
 ## on_context_menu
 
@@ -1553,6 +1554,7 @@ present in previous examples.
 | ex8_display_modes.py | Using a ViewProxy to setup display modes |       ![ex8_display_modes.py](ex8_display_modes.png) |
 | ex9_migrations.py    | Basic migration                          |       |
 | ex10_part_design.py  | Object compatible with PartDesign        |       ![ex10_part_design.py](ex10_part_design.png) |
+| ex11_undo_redo.py    | Transactional undo/redo aware code       |       |
 
 
 # Quick setup

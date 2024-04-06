@@ -42,7 +42,7 @@ from dataclasses import dataclass
 from typing import Any, Tuple, Callable, Dict, Iterable, List, Set, Union, NewType
 from enum import IntEnum, Enum
 import inspect
-import re, sys, traceback, textwrap
+import re, sys, traceback, textwrap, contextlib
 from pathlib import Path
 from warnings import warn
 
@@ -2008,3 +2008,41 @@ def confirm_box(message: str, title: str = "Message", details: str = None) -> bo
         diag.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
         return diag.exec_() == QtGui.QMessageBox.Ok
     return False
+
+
+#% ─────────────────────────────────────────────────────────────────────────────
+class TransactionAbortException(Exception):
+    pass
+
+#% ─────────────────────────────────────────────────────────────────────────────
+class TransactionCtrl:
+    def abort(self):
+        raise TransactionAbortException()
+    
+#@ ─────────────────────────────────────────────────────────────────────────────
+@contextlib.contextmanager
+def transaction(name: str, doc: Document = None):
+    """
+    Context manager to execute code in a document transaction (undo/redo)
+
+    :param str name: Name of the transaction in undo/redo stack
+    :param Document doc: selected document, defaults to None
+    :yield TransactionCtrl: transaction control
+    """
+    ctrl = TransactionCtrl()
+    _doc = doc or App.activeDocument()
+    if not _doc:
+        raise ValueError('There is not active document')
+    try:
+        _doc.openTransaction(name)
+        yield ctrl
+        _doc.commitTransaction()
+    except TransactionAbortException:
+        # Intentionally aborted transaction
+        _doc.abortTransaction()
+        print_log(f"Transaction '{name}' aborted intentionally")
+    except:
+        # Unexpected exception
+        _doc.abortTransaction()
+        print_err(f"Transaction '{name}' aborted unexpectedly")
+        raise

@@ -41,6 +41,6 @@ class MyCube:
 
 # Use by just calling the create method from a macro or directly from the python
 # console
-def create_cube():
-    return MyCube.create(name="Cube")
+def create_cube(name: str = 'Cube'):
+    return MyCube.create(name=name)
 
