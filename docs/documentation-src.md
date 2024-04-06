@@ -1103,7 +1103,7 @@ migrations decorator and implement the corresponding methods
 @proxy(version=2)
 class FpoClass:
 
-    def on_migrate_complete(self, obj):
+    def on_migrate_complete(self, version, obj):
         # Called after all migrations are applied
 
     def on_migrate_upgrade(self, version, fp):

@@ -5,7 +5,7 @@ license: LGPL 2.1
 version: 1.0.0-draft3
 min_python: 3.7
 min_freecad: 0.20
-date: 2024-04-05 23:20:22.297490
+date: 2024-04-05 23:23:46.272653
 geometry: "margin=2cm"
 ---
 
@@ -14,7 +14,7 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-04-05 23:20:22.305040                        |
+| __generated__     | 2024-04-05 23:23:46.282299                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
@@ -1156,7 +1156,7 @@ migrations decorator and implement the corresponding methods
 @proxy(version=2)
 class FpoClass:
 
-    def on_migrate_complete(self, obj):
+    def on_migrate_complete(self, version, obj):
         # Called after all migrations are applied
 
     def on_migrate_upgrade(self, version, fp):
