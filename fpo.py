@@ -1823,7 +1823,7 @@ def get_pd_active_body() -> PartDesign_Body:
 # ──────────────────────────────────────────────────────────────────────────────
 def set_pd_shape(fp: DocumentObject, shape: Shape) -> None:
     """
-    Prepare the shape for usage in PartDesign and sets `BaseFeature` and `AddSubShape`
+    Prepare the shape for usage in PartDesign and sets `Shape` and `AddSubShape`
     """
     # Validate type
     if not fp.TypeId.startswith('PartDesign::'):
