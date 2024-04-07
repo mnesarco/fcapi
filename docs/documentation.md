@@ -5,7 +5,7 @@ license: LGPL 2.1
 version: 1.0.0-draft3
 min_python: 3.7
 min_freecad: 0.20
-date: 2024-04-06 15:28:21.976938
+date: 2024-04-07 17:45:30.058352
 geometry: "margin=2cm"
 ---
 
@@ -14,7 +14,7 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-04-06 15:28:21.983854                        |
+| __generated__     | 2024-04-07 17:45:30.069703                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
@@ -1559,7 +1559,7 @@ present in previous examples.
 
 # Quick setup
 
-The only required file to use this API is `fpo.py`, the key is where to put them
+The only required file to use this API is `fpo.py`, the key point is where to put it
 as it is not a FreeCAD core thing by now.
 
 ## Usage from a Workbench
@@ -1573,7 +1573,7 @@ As `fpo.py` is not part of the core FreeCAD distribution, it is possible that ot
 copy or put it in your internal module.
 
 Remember that the recommended layout for workbenches is to put the code into a
-sub-module of freecad.
+module of the freecad package.
 
 ```
 .
@@ -1591,21 +1591,21 @@ sub-module of freecad.
 
 ## Usage from Macros
 
-It is better to not define `ScriptedObject` classes directly in __Macros__ 
+It is better to not define your proxy classes directly in __Macros__ 
 because FreeCAD will have have a hard time finding them when reloading the
 objects from saved documents.
 
 What you can do in this case is putting the `fpo.py` file directly in the FreeCAD's
-__Macros__ directory, then create your `ScriptedObject` classes in its own file in 
+__Macros__ directory, then create your proxy classes in its own file in 
 __Macros__ dir, then import them from your macros. That way FreeCAD will 
 find the Proxies next time you open your Documents.
 
 ## Quick and dirty setup
 
 Another easy way if you don't want to develop a *Workbench* is to fake one,
-To do that simply create a folder inside FreeCAD's Mod directory and put `fpo.py` and
-your other python files there along with an empty `__init__.py` file. This will 
-make fpo and your modules visible to FreeCAD in the main path. 
+To do that simply create a folder inside FreeCAD's Mod directory and put `fpo.py` 
+and your other python files there. This will make fpo and your modules visible 
+and importable from to FreeCAD. 
 
 ## Examples setup
 
@@ -1623,4 +1623,4 @@ ex10.create_cube_pd()
 ```
 
 > [!IMPORTANT]
-> Copy `fpo.py` in only one place to avoid a name conflicts.
+> Copy `fpo.py` in __only one place__ to avoid a name conflicts.
