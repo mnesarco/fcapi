@@ -160,15 +160,29 @@ supported:
 * `App::LinkPython`
 * `App::MaterialObjectPython`
 * `App::PlacementPython`
+* `Fem::ConstraintPython`
+* `Fem::FeaturePython`
+* `Fem::FemAnalysisPython`
+* `Fem::FemMeshObjectPython`
+* `Fem::FemResultObjectPython`
+* `Fem::FemSolverObjectPython`
+* `Mesh::FeaturePython`
 * `Part::CustomFeaturePython`
 * `Part::FeaturePython`
 * `Part::Part2DObjectPython`
+* `PartDesign::FeatureAddSubPython`
+* `PartDesign::FeatureAdditivePython`
+* `PartDesign::FeaturePython`
+* `PartDesign::FeatureSubtractivePython`
+* `PartDesign::SubShapeBinderPython`
 * `Path::FeatureAreaPython`
 * `Path::FeatureAreaViewPython`
 * `Path::FeatureCompoundPython`
 * `Path::FeaturePython`
 * `Path::FeatureShapePython`
+* `Points::FeaturePython`
 * `Sketcher::SketchObjectPython`
+* `Spreadsheet::SheetPython`
 * `TechDraw::DrawComplexSectionPython`
 * `TechDraw::DrawLeaderLinePython`
 * `TechDraw::DrawPagePython`
@@ -181,6 +195,7 @@ supported:
 * `TechDraw::DrawViewSectionPython`
 * `TechDraw::DrawViewSymbolPython`
 * `TechDraw::DrawWeldSymbolPython`
+
 
 Source: https://wiki.freecad.org/Scripted_objects#Available_object_types
 

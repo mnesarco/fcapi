@@ -5,7 +5,7 @@ license: LGPL 2.1
 version: 1.0.0-draft3
 min_python: 3.7
 min_freecad: 0.20
-date: 2024-04-07 17:45:30.058352
+date: 2024-04-07 22:53:11.916867
 geometry: "margin=2cm"
 ---
 
@@ -14,7 +14,7 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-04-07 17:45:30.069703                        |
+| __generated__     | 2024-04-07 22:53:11.933730                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
@@ -250,15 +250,29 @@ supported:
 * `App::LinkPython`
 * `App::MaterialObjectPython`
 * `App::PlacementPython`
+* `Fem::ConstraintPython`
+* `Fem::FeaturePython`
+* `Fem::FemAnalysisPython`
+* `Fem::FemMeshObjectPython`
+* `Fem::FemResultObjectPython`
+* `Fem::FemSolverObjectPython`
+* `Mesh::FeaturePython`
 * `Part::CustomFeaturePython`
 * `Part::FeaturePython`
 * `Part::Part2DObjectPython`
+* `PartDesign::FeatureAddSubPython`
+* `PartDesign::FeatureAdditivePython`
+* `PartDesign::FeaturePython`
+* `PartDesign::FeatureSubtractivePython`
+* `PartDesign::SubShapeBinderPython`
 * `Path::FeatureAreaPython`
 * `Path::FeatureAreaViewPython`
 * `Path::FeatureCompoundPython`
 * `Path::FeaturePython`
 * `Path::FeatureShapePython`
+* `Points::FeaturePython`
 * `Sketcher::SketchObjectPython`
+* `Spreadsheet::SheetPython`
 * `TechDraw::DrawComplexSectionPython`
 * `TechDraw::DrawLeaderLinePython`
 * `TechDraw::DrawPagePython`
@@ -271,6 +285,7 @@ supported:
 * `TechDraw::DrawViewSectionPython`
 * `TechDraw::DrawViewSymbolPython`
 * `TechDraw::DrawWeldSymbolPython`
+
 
 Source: https://wiki.freecad.org/Scripted_objects#Available_object_types
 
