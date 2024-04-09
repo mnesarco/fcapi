@@ -152,52 +152,55 @@ supported:
 
 ~:a:supported-feature-types:~
 
-* `App::DocumentObjectGroupPython`
-* `App::FeaturePython`
-* `App::GeometryPython`
-* `App::LinkElementPython`
-* `App::LinkGroupPython`
-* `App::LinkPython`
-* `App::MaterialObjectPython`
-* `App::PlacementPython`
-* `Fem::ConstraintPython`
-* `Fem::FeaturePython`
-* `Fem::FemAnalysisPython`
-* `Fem::FemMeshObjectPython`
-* `Fem::FemResultObjectPython`
-* `Fem::FemSolverObjectPython`
-* `Mesh::FeaturePython`
-* `Part::CustomFeaturePython`
-* `Part::FeaturePython`
-* `Part::Part2DObjectPython`
-* `PartDesign::FeatureAddSubPython`
-* `PartDesign::FeatureAdditivePython`
-* `PartDesign::FeaturePython`
-* `PartDesign::FeatureSubtractivePython`
-* `PartDesign::SubShapeBinderPython`
-* `Path::FeatureAreaPython`
-* `Path::FeatureAreaViewPython`
-* `Path::FeatureCompoundPython`
-* `Path::FeaturePython`
-* `Path::FeatureShapePython`
-* `Points::FeaturePython`
-* `Sketcher::SketchObjectPython`
-* `Spreadsheet::SheetPython`
-* `TechDraw::DrawComplexSectionPython`
-* `TechDraw::DrawLeaderLinePython`
-* `TechDraw::DrawPagePython`
-* `TechDraw::DrawRichAnnoPython`
-* `TechDraw::DrawTemplatePython`
-* `TechDraw::DrawTilePython`
-* `TechDraw::DrawTileWeldPython`
-* `TechDraw::DrawViewPartPython`
-* `TechDraw::DrawViewPython`
-* `TechDraw::DrawViewSectionPython`
-* `TechDraw::DrawViewSymbolPython`
-* `TechDraw::DrawWeldSymbolPython`
+| Object type                            | Description                         |
+|----------------------------------------|-------------------------------------|
+| `App::DocumentObjectGroupPython`       |                                     |
+| `App::FeaturePython`                   | Typical Scripted Object             |
+| `App::GeometryPython`                  |                                     |
+| `App::LinkElementPython`               |                                     |
+| `App::LinkGroupPython`                 |                                     |
+| `App::LinkPython`                      |                                     |
+| `App::MaterialObjectPython`            |                                     |
+| `App::PlacementPython`                 |                                     |
+| `Fem::ConstraintPython`                |                                     |
+| `Fem::FeaturePython`                   |                                     |
+| `Fem::FemAnalysisPython`               |                                     |
+| `Fem::FemMeshObjectPython`             |                                     |
+| `Fem::FemResultObjectPython`           |                                     |
+| `Fem::FemSolverObjectPython`           |                                     |
+| `Mesh::FeaturePython`                  |                                     |
+| `Part::CustomFeaturePython`            |                                     |
+| `Part::FeaturePython`                  | Typical Scripted object with Shape  |
+| `Part::Part2DObjectPython`             |                                     |
+| `PartDesign::FeatureAddSubPython`      | Additive/Subtractive PD Shape       |
+| `PartDesign::FeatureAdditivePython`    | Additive PD Shape                   |
+| `PartDesign::FeaturePython`            | Base PD Feature                     |
+| `PartDesign::FeatureSubtractivePython` | Subtractive PD Shape                |
+| `PartDesign::SubShapeBinderPython`     |                                     |
+| `Path::FeatureAreaPython`              |                                     |
+| `Path::FeatureAreaViewPython`          |                                     |
+| `Path::FeatureCompoundPython`          |                                     |
+| `Path::FeaturePython`                  |                                     |
+| `Path::FeatureShapePython`             |                                     |
+| `Points::FeaturePython`                |                                     |
+| `Sketcher::SketchObjectPython`         |                                     |
+| `Spreadsheet::SheetPython`             |                                     |
+| `TechDraw::DrawComplexSectionPython`   |                                     |
+| `TechDraw::DrawLeaderLinePython`       |                                     |
+| `TechDraw::DrawPagePython`             |                                     |
+| `TechDraw::DrawRichAnnoPython`         |                                     |
+| `TechDraw::DrawTemplatePython`         |                                     |
+| `TechDraw::DrawTilePython`             |                                     |
+| `TechDraw::DrawTileWeldPython`         |                                     |
+| `TechDraw::DrawViewPartPython`         |                                     |
+| `TechDraw::DrawViewPython`             |                                     |
+| `TechDraw::DrawViewSectionPython`      |                                     |
+| `TechDraw::DrawViewSymbolPython`       |                                     |
+| `TechDraw::DrawWeldSymbolPython`       |                                     |
 
 
-Source: https://wiki.freecad.org/Scripted_objects#Available_object_types
+* Wiki Source: https://wiki.freecad.org/Scripted_objects#Available_object_types
+* Forum Source: https://forum.freecad.org/viewtopic.php?t=86414&start=10#p752318
 
 > [!NOTE]
 > There is an official class diagram, but it does not include scriptable objects 
