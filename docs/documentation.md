@@ -1,11 +1,11 @@
 ---
-author: Frank David Martínez Muñoz
-copyright: (c) 2024 Frank David Martínez Muñoz.
-license: LGPL 2.1
-version: 1.0.0-draft3
-min_python: 3.7
-min_freecad: 0.20
-date: 2024-04-07 22:53:11.916867
+author: "Frank David Martínez Muñoz"
+copyright: "(c) 2024 Frank David Martínez Muñoz."
+license: "LGPL 2.1"
+version: "1.0.0-beta1"
+min_python: "3.7"
+min_freecad: "0.20"
+date: "2024-04-08 19:06:40.900626"
 geometry: "margin=2cm"
 ---
 
@@ -14,11 +14,11 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-04-07 22:53:11.933730                        |
+| __generated__     | 2024-04-08 19:06:40.908330                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
-| __version__       | 1.0.0-draft3                                      |
+| __version__       | 1.0.0-beta1                                       |
 | __min_python__    | 3.7                                               |
 | __min_freecad__   | 0.20                                              |
 

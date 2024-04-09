@@ -115,8 +115,8 @@ def generate_preamble(source: ast.Module, fpo: Any):
     meta = get_meta(source, fpo)
     content = ['---']
     for name, value in meta.items():
-        content.append(f"{name.replace('__', '')}: {str(value)}".replace('\n', ''))
-    content.append(f"date: {datetime.datetime.now()}")
+        content.append(f"{name.replace('__', '')}: \"{str(value)}\"".replace('\n', ''))
+    content.append(f"date: \"{datetime.datetime.now()}\"")
     content.append(f'geometry: "margin=2cm"')
     content.append('---')
     return "\n".join(content)

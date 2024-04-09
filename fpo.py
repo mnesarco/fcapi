@@ -20,7 +20,7 @@
 __author__          = "Frank David Martínez Muñoz"
 __copyright__       = "(c) 2024 Frank David Martínez Muñoz."
 __license__         = "LGPL 2.1"
-__version__         = "1.0.0-draft3"
+__version__         = "1.0.0-beta1"
 __min_python__      = "3.7"
 __min_freecad__     = "0.20"
 
