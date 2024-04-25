@@ -1466,8 +1466,8 @@ and importable from to FreeCAD.
 
 ## Examples setup
 
-Copy `fpo.py` and `examples/*` into FreeCAD's *Macro* dir. then you can run the 
-examples from the FreeCAD's python console:
+Copy `fpo.py` and `examples/*` (the files, not the directory) into FreeCAD's 
+*Macro* dir. then you can run the examples from the FreeCAD's python console:
 
 ```python
 import ex3_spring as ex3

@@ -5,7 +5,7 @@ license: "LGPL 2.1"
 version: "1.0.0-beta1"
 min_python: "3.7"
 min_freecad: "0.20"
-date: "2024-04-08 19:18:12.773799"
+date: "2024-04-25 10:25:44.495656"
 geometry: "margin=2cm"
 ---
 
@@ -14,7 +14,7 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-04-08 19:18:12.780943                        |
+| __generated__     | 2024-04-25 10:25:44.502944                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
@@ -1627,8 +1627,8 @@ and importable from to FreeCAD.
 
 ## Examples setup
 
-Copy `fpo.py` and `examples/*` into FreeCAD's *Macro* dir. then you can run the 
-examples from the FreeCAD's python console:
+Copy `fpo.py` and `examples/*` (the files, not the directory) into FreeCAD's 
+*Macro* dir. then you can run the examples from the FreeCAD's python console:
 
 ```python
 import ex3_spring as ex3
