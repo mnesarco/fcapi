@@ -3,9 +3,9 @@ author: "Frank David Martínez Muñoz"
 copyright: "(c) 2024 Frank David Martínez Muñoz."
 license: "LGPL 2.1"
 version: "1.0.0-beta1"
-min_python: "3.7"
-min_freecad: "0.20"
-date: "2024-04-25 10:25:44.495656"
+min_python: "3.8"
+min_freecad: "0.21"
+date: "2024-04-28 11:05:24.499428"
 geometry: "margin=2cm"
 ---
 
@@ -14,13 +14,13 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-04-25 10:25:44.502944                        |
+| __generated__     | 2024-04-28 11:05:24.506415                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
 | __version__       | 1.0.0-beta1                                       |
-| __min_python__    | 3.7                                               |
-| __min_freecad__   | 0.20                                              |
+| __min_python__    | 3.8                                               |
+| __min_freecad__   | 0.21                                              |
 
 
 # TABLE OF CONTENTS
@@ -150,7 +150,7 @@ of the basic usage of it.
 ## Goals
 
 * The API must be developer friendly, consistent, maintainable and compatible 
-  with FC 0.20+
+  with FC 0.21+
 * The API must be an overlay on top of the existing API, so no conflicts 
   with existing code.
 * The API must be 100% documented.
@@ -1441,7 +1441,7 @@ is a boolean that indicate if the selection matches the patterns.
 ### *function:* __set_immutable_prop__
 
 ```python
-def set_immutable_prop(obj: ObjectRef, name: str, value: Any) -> None
+def set_immutable_prop(obj: Union[DocumentObject, ViewProviderDocumentObject], name: str, value: Any) -> None
 ```
 Force update a property with Immutable status. It temporarily removes the
 immutable flag, sets the value and restore the flag if required.

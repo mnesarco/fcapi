@@ -62,7 +62,7 @@ of the basic usage of it.
 ## Goals
 
 * The API must be developer friendly, consistent, maintainable and compatible 
-  with FC 0.20+
+  with FC 0.21+
 * The API must be an overlay on top of the existing API, so no conflicts 
   with existing code.
 * The API must be 100% documented.

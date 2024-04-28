@@ -21,8 +21,8 @@ __author__          = "Frank David Martínez Muñoz"
 __copyright__       = "(c) 2024 Frank David Martínez Muñoz."
 __license__         = "LGPL 2.1"
 __version__         = "1.0.0-beta1"
-__min_python__      = "3.7"
-__min_freecad__     = "0.20"
+__min_python__      = "3.8"
+__min_freecad__     = "0.21"
 
 
 # Conventions for sections in this file:
@@ -45,7 +45,23 @@ import inspect
 import re, sys, traceback, textwrap, contextlib
 from pathlib import Path
 from warnings import warn
+import typing
 
+if typing.TYPE_CHECKING:
+    from FreeCAD import Document                        # type: ignore
+    from FreeCAD import DocumentObject                  # type: ignore
+    from FreeCAD import ParameterGrp                    # type: ignore
+    from Gui import ViewProviderDocumentObject          # type: ignore
+    from PySide2.QtWidgets import QMenu, QMessageBox    # type: ignore
+    from Part import Shape                              # type: ignore
+else:
+    Document = NewType('Document', object)
+    DocumentObject = NewType('DocumentObject', object)
+    ViewProviderDocumentObject = NewType('ViewProviderDocumentObject', object)
+    ParameterGrp = NewType('ParameterGrp', object)
+    QMenu = NewType('QMenu', object)
+    QMessageBox = NewType('QMessageBox', object)
+    Shape = NewType('Shape', object) # Part.Shape class
 
 #: Conditional imports
 #: ─────────────────────────────────────────────────────────────────────────────
@@ -53,11 +69,12 @@ try:
     # ┌───────────────────────────────────┐ 
     # │ FreeCAD Environment imports       │ 
     # └───────────────────────────────────┘    
-    import FreeCAD as App
-
+    import FreeCAD as App  # type: ignore
+    
     if App.GuiUp:
-        from pivy import coin
-        import FreeCADGui as Gui
+        from pivy import coin               # type: ignore
+        import FreeCADGui as Gui            # type: ignore
+        from PySide import QtGui, QtCore    # type: ignore
 
     def print_log(*args):
         App.Console.PrintLog(f"[info] {' '.join(str(a) for a in args)}\n")
@@ -82,21 +99,14 @@ print_log.__doc__ = "Print into the FreeCAD console with info level."
 
 
 #: FreeCAD defined c++ types (Just for the sake of documentation)
-#: fake type hints compatible with python 3.6+
+#: fake type hints compatible with python 3.8+
 #: ─────────────────────────────────────────────────────────────────────────────
-DocumentObject = NewType('DocumentObject', object)    # FreeCAD Feature Object
-ViewObject = NewType('ViewObject', object)            # FreeCAD ViewProvider Object
-ObjectRef = NewType('ObjectRef', object)
-Document = NewType('Document', object)                # FreeCAD Document
-QMenu = NewType('QMenu', object)                      # Qt Menu
-QMessageBox = NewType('QMessageBox', object)          # Qt MessageBox
-ParameterGrp = NewType('ParameterGrp', object)        # Preferences Group
+ObjectRef = Union[DocumentObject, ViewProviderDocumentObject]
 PartDesign_Body = NewType('PartDesign_Body', object)  # PartDesign.Body class
-Shape = NewType('Shape', object)                      # Part.Shape class
 
 
 #: User defined python Types (Just for the sake of documentation)
-#: fake type hints compatible with python 3.6+
+#: fake type hints compatible with python 3.8+
 #: ─────────────────────────────────────────────────────────────────────────────
 DataProxy = NewType('DataProxy', object)  # Python proxy of DocumentObject
 ViewProxy = NewType('ViewProxy', object)  # Python proxy of ViewObject
@@ -786,7 +796,7 @@ class TypeMeta:
                 proxy.__so_old__[prop.name] = prop.default
 
     # ──────────
-    def init_display_modes(self, proxy: ViewProxy, obj: ViewObject):
+    def init_display_modes(self, proxy: ViewProxy, obj: ViewProviderDocumentObject):
         if len(self.display_modes) > 0:
             for dm in self.display_modes.values():
                 dm_obj = None
@@ -1102,7 +1112,7 @@ def t_proxy_object(overridden: Any, meta: TypeMeta):
 #$ ─────────────────────────────────────────────────────────────────────────────
 @template(name='ViewObject')
 def t_proxy_vobject(overridden: Any, meta: TypeMeta):
-    def handler(self) -> ViewObject:
+    def handler(self) -> ViewProviderDocumentObject:
         '''Returns FreeCAD internal View Provider Object'''
         return self.Object.ViewObject
     return property(handler)
@@ -1380,7 +1390,7 @@ def t_view_proxy_constructor(overridden: Any, meta: TypeMeta):
         def __init__(self, vp, ...)
     ```
     '''
-    def __init__(self, vp: ViewObject, /, *args, **kwargs):
+    def __init__(self, vp: ViewProviderDocumentObject, /, *args, **kwargs):
         self.__so_ref__ = vp
         if vp:
             vp.Proxy = self
@@ -1419,7 +1429,7 @@ def t_view_proxy_attach(overridden: Any, meta: TypeMeta):
 def t_view_proxy_ctx_menu(overridden: Any, meta: TypeMeta):
     call = getattr(meta.cls, _ON_CONTEXT_MENU, None)
     if call:
-        def handler(self, vp: ViewObject, menu: QMenu):
+        def handler(self, vp: ViewProviderDocumentObject, menu: QMenu):
             call(self, menu)
         return handler
 
@@ -1443,7 +1453,7 @@ def t_view_proxy_claim_children(overridden: Any, meta: TypeMeta):
 def t_view_proxy_edit_start(overridden: Any, meta: TypeMeta):
     call = getattr(meta.cls, _ON_EDIT_START, None)
     if call:
-        def handler(self, vp: ViewObject, mode: int = 0):
+        def handler(self, vp: ViewProviderDocumentObject, mode: int = 0):
             return call(self, vp, mode)
         return handler
 
@@ -1454,7 +1464,7 @@ def t_view_proxy_edit_start(overridden: Any, meta: TypeMeta):
 def t_view_proxy_edit_end(overridden: Any, meta: TypeMeta):
     call = getattr(meta.cls, _ON_EDIT_END, None)
     if call:
-        def handler(self, vp: ViewObject, mode: int = 0):
+        def handler(self, vp: ViewProviderDocumentObject, mode: int = 0):
             return call(self, vp, mode)
         return handler
 
@@ -1465,7 +1475,7 @@ def t_view_proxy_edit_end(overridden: Any, meta: TypeMeta):
 def t_view_proxy_delete(overridden: Any, meta: TypeMeta):
     call = getattr(meta.cls, _ON_DELETE, None)
     if call:
-        def handler(self, vp: ViewObject, sub_elements):
+        def handler(self, vp: ViewProviderDocumentObject, sub_elements):
             return call(self, vp, sub_elements)
         return handler
 
@@ -1476,7 +1486,7 @@ def t_view_proxy_delete(overridden: Any, meta: TypeMeta):
 def t_view_proxy_dbl_click(overridden: Any, meta: TypeMeta):
     call = getattr(meta.cls, _ON_DBL_CLICK, None)
     if call:
-        def handler(self, vp: ViewObject):
+        def handler(self, vp: ViewProviderDocumentObject):
             return call(self, vp)
         return handler
 
@@ -1485,7 +1495,7 @@ def t_view_proxy_dbl_click(overridden: Any, meta: TypeMeta):
         name='onChanged',
         override_error_msg=f"Use {_ON_CHANGE} instead")
 def t_view_proxy_change(overridden: Any, meta: TypeMeta):
-    def handler(self, vp: ViewObject, prop_name: str):
+    def handler(self, vp: ViewProviderDocumentObject, prop_name: str):
         new_value = getattr(vp, prop_name, None)
         meta.apply_extensions(self, vp, _ON_CHANGE, prop_name)
         prop = meta.property_lookup.get(prop_name, None)
@@ -1533,10 +1543,10 @@ def t_view_proxy_set_dm(overridden: Any, meta: TypeMeta):
 def t_view_proxy_get_dms(overridden: Any, meta: TypeMeta):
     meta_dm = getattr(meta.cls, _DISPLAY_MODES, None)
     if meta_dm:
-        def handler(self, vp: ViewObject):
+        def handler(self, vp: ViewProviderDocumentObject):
             return meta_dm(self, vp)
     else:
-        def handler(self, vp: ViewObject):
+        def handler(self, vp: ViewProviderDocumentObject):
             return [dm.name for dm in meta.display_modes.values()]
     return handler
 
@@ -1596,7 +1606,7 @@ def t_view_proxy_object(overridden: Any, meta: TypeMeta):
 #$ ─────────────────────────────────────────────────────────────────────────────
 @template(name='ViewObject')
 def t_view_proxy_vobject(overridden: Any, meta: TypeMeta):
-    def handler(self) -> ViewObject:
+    def handler(self) -> ViewProviderDocumentObject:
         '''Returns FreeCAD internal View Provider Object'''
         return self.__so_ref__
     return property(handler)
@@ -1954,7 +1964,6 @@ def _basic_modal_dlg(
     :param str details: expanded message, defaults to None
     :return QMessageBox: qt object for further customization
     """
-    from PySide import QtGui, QtCore
     diag = QtGui.QMessageBox()
     diag.setIcon(QtGui.QMessageBox.Information)
     diag.setWindowTitle(title)
@@ -2003,7 +2012,6 @@ def confirm_box(message: str, title: str = "Message", details: str = None) -> bo
     :return bool: True if user accepts
     """
     if App.GuiUp:
-        from PySide import QtGui
         diag = _basic_modal_dlg(message, title, details)
         diag.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
         return diag.exec_() == QtGui.QMessageBox.Ok
