@@ -5,7 +5,7 @@ license: "LGPL 2.1"
 version: "1.0.0-beta1"
 min_python: "3.8"
 min_freecad: "0.21"
-date: "2024-04-28 11:05:24.499428"
+date: "2024-05-18 19:11:00.950276"
 geometry: "margin=2cm"
 ---
 
@@ -14,7 +14,7 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-04-28 11:05:24.506415                        |
+| __generated__     | 2024-05-18 19:11:00.957339                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
@@ -138,10 +138,9 @@ examples. My goal is to cover all of the supported features but it will take tim
 This is a technical document for developers of FreeCAD extensions commonly known
 as Feature Python Objects or more generally Scripted Objects.
 
-This is a python API, it is expected that the readers are python developers with
-a little more than basic python coding skills. The public part of the API does not
-use any obscure language feature but it uses classes, functions, decorators,
-type hints, etc...
+General programming experience, some basic FreeCAD know-how and a minimalistic 
+comprehension of Python are sufficient, as long as you can search the internet 
+for a basic grasp of classes, functions, decorators, type hints, etc...;)
 
 It is also expected that the readers are FreeCAD users, and have a good understanding
 of the basic usage of it.
