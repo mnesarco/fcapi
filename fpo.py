@@ -1164,7 +1164,7 @@ def t_proxy_create(overridden: Any, meta: TypeMeta):
         _doc = doc or App.activeDocument() or App.newDocument()
         fp = _doc.addObject(meta.object_type, _name, proxy, view_proxy, True)
 
-        if hasattr(fp, 'ViewObject'):
+        if hasattr(fp, 'ViewObject') and hasattr(fp.ViewObject, 'Proxy'):
             if view_proxy is None:
                 fp.ViewObject.Proxy = 0
             elif fp.ViewObject.Proxy != view_proxy:
