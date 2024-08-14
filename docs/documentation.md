@@ -5,7 +5,7 @@ license: "LGPL 2.1"
 version: "1.0.0-beta1"
 min_python: "3.8"
 min_freecad: "0.21"
-date: "2024-05-18 19:11:00.950276"
+date: "2024-08-14 03:07:00.470964"
 geometry: "margin=2cm"
 ---
 
@@ -14,7 +14,7 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-05-18 19:11:00.957339                        |
+| __generated__     | 2024-08-14 03:07:00.477830                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
@@ -652,7 +652,7 @@ class CustomBoxProxy:
         fpo.Shape = Part.makeBox(self.length, self.width, self.height)
     
     @length.observer
-    def length_changed(self, new_value, old_value):
+    def length_changed(self, fp, new_value, old_value):
         print(f"Hey! length has changed from {old_Value} to {new_value}")
 
 ```
@@ -719,7 +719,7 @@ class MyMagicProxy:
 
     # Optional listener
     @my_property.observer
-    def my_property_obs(self, new_value, old_value):
+    def my_property_obs(self, fp, new_value, old_value):
         print(f"my_property has changed from {old_value} to {new_value}")
         
 ```
@@ -809,15 +809,15 @@ class MyMagicProxy
     my_prop3 = PropertyInteger(section="Basic", default=5)
 
     @my_prop1.observer
-    def listener1(self, new_value, old_value):
+    def listener1(self, fp, new_value, old_value):
         print(f"my_property1 has changed from {old_value} to {new_value}")
         
     @my_prop2.observer
-    def listener2(self, new_value):
+    def listener2(self, fp, new_value):
         print(f"my_property2 has changed {new_value}")
 
     @my_prop3.observer
-    def listener3(self):
+    def listener3(self, fp):
         print(f"my_property3 has changed")
         
 ```
