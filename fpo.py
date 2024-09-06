@@ -1430,7 +1430,7 @@ def t_view_proxy_ctx_menu(overridden: Any, meta: TypeMeta):
     call = getattr(meta.cls, _ON_CONTEXT_MENU, None)
     if call:
         def handler(self, vp: ViewProviderDocumentObject, menu: QMenu):
-            call(self, menu)
+            call(self, vp, menu)
         return handler
 
 
