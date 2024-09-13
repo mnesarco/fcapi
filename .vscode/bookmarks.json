@@ -49,42 +49,42 @@
 					"label": "Type Meta"
 				},
 				{
-					"line": 810,
+					"line": 820,
 					"column": 0,
 					"label": "Preference"
 				},
 				{
-					"line": 924,
+					"line": 934,
 					"column": 0,
 					"label": "proxy decorator"
 				},
 				{
-					"line": 976,
+					"line": 986,
 					"column": 0,
 					"label": "view_proxy decorator"
 				},
 				{
-					"line": 1056,
+					"line": 1066,
 					"column": 0,
 					"label": "DataProxy Templates"
 				},
 				{
-					"line": 1377,
+					"line": 1388,
 					"column": 0,
 					"label": "ViewProxy templates"
 				},
 				{
-					"line": 1615,
+					"line": 1626,
 					"column": 0,
 					"label": "Migrations"
 				},
 				{
-					"line": 1744,
+					"line": 1755,
 					"column": 0,
 					"label": "Module init"
 				},
 				{
-					"line": 1818,
+					"line": 1829,
 					"column": 0,
 					"label": "Global user functions"
 				}

@@ -789,6 +789,16 @@ class TypeMeta:
         setattr(obj, _SO_VERSION, self.version)
 
     # ──────────
+    def ensure_properties(self, proxy: Proxy, obj: ObjectRef):
+        """
+        Add missing properties to the ObjectRef, used to add new properties
+        on start if the class have declared new properties since the file
+        was saved.
+        """
+        for prop in self.properties.values():
+            prop.create(obj)
+
+    # ──────────
     def init_properties(self, proxy: Proxy, obj: ObjectRef):
         for prop in self.properties.values():
             prop.create(obj)
@@ -1215,6 +1225,7 @@ def t_proxy_restore(overridden: Any, meta: TypeMeta):
         self._fp_state = FeatureState.Restored
 
         meta.apply_extensions(self, fp, _ON_START)
+        meta.ensure_properties(self, fp)
         _call(self, _ON_START, fp)
         
         self._fp_state = FeatureState.Active
