@@ -572,7 +572,7 @@ class ExtensionSupport:
     # ──────────
     def on_attach(self, proxy: Proxy, obj: ObjectRef, meta: 'TypeMeta'):
         '''Extension listener for on_attach event'''
-        pass
+        self.add_extension(proxy, obj)
 
     # ──────────
     def on_start(self, proxy: Proxy, obj: ObjectRef, meta: 'TypeMeta'):

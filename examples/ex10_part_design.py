@@ -22,7 +22,9 @@ import Part, FreeCADGui as Gui, FreeCAD as App
 
 # Here we will create a simple Cube with PartDesign semantic
 #
-@proxy(object_type="PartDesign::FeatureAdditivePython")
+@proxy(
+    object_type="PartDesign::FeatureAdditivePython",
+    extensions=['Part::AttachExtensionPython'])
 class PDMyCubeAdd:
     length = PropertyLength(default=10)
     width = PropertyLength(default=10)
@@ -46,6 +48,6 @@ def create_cube_pd():
         print_err("No active body.")
         return
     
-    cube = PDMyCubeAdd.create(name="Cube")
+    cube = PDMyCubeAdd.create(name="CubeFeature")
     body.addObject(cube)
 

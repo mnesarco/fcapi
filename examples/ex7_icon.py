@@ -38,5 +38,5 @@ class MyDataObj:
 # Use by just calling the create method from a macro or directly from the python
 # console
 def create_data():
-    return MyDataObj.create(name="Params")
+    return MyDataObj.create(name="CustomIcon")
 

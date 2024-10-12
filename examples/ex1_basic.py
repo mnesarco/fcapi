@@ -34,5 +34,5 @@ class MyData:
 # Use by just calling the create method from a macro or directly from the python
 # console
 def create_data():
-    return MyData.create(name="Params")
+    return MyData.create(name="ParamsBasic")
 
