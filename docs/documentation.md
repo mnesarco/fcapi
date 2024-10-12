@@ -5,7 +5,7 @@ license: "LGPL 2.1"
 version: "1.0.0-beta1"
 min_python: "3.8"
 min_freecad: "0.21"
-date: "2024-10-12 10:02:27.601634"
+date: "2024-10-12 10:21:41.766642"
 geometry: "margin=2cm"
 ---
 
@@ -14,7 +14,7 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-10-12 10:02:27.608486                        |
+| __generated__     | 2024-10-12 10:21:41.773667                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
@@ -1572,6 +1572,7 @@ present in previous examples.
 | ex9_migrations.py    | Basic migration                          |       |
 | ex10_part_design.py  | Object compatible with PartDesign        |       ![ex10_part_design.py](ex10_part_design.png) |
 | ex11_undo_redo.py    | Transactional undo/redo aware code       |       |
+| ex12_group.py        | Group behavior                           |       ![ex12_group.py](ex12_group.png)             |
 
 
 # Quick setup
