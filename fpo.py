@@ -1259,7 +1259,7 @@ def t_proxy_before_change(overridden: Any, meta: TypeMeta):
 #$ ─────────────────────────────────────────────────────────────────────────────
 @template(
         name='onChanged',
-        override_error_msg=f"User {_ON_CHANGE} instead")
+        override_error_msg=f"Use {_ON_CHANGE} instead")
 def t_proxy_change(overridden: Any, meta: TypeMeta):
     def handler(self, fp: DocumentObject, prop_name: str):
         if getattr(self, '__so_state__', None) == FeatureState.Active:
