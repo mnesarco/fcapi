@@ -51,7 +51,7 @@ if typing.TYPE_CHECKING:
     from FreeCAD import Document                        # type: ignore
     from FreeCAD import DocumentObject                  # type: ignore
     from FreeCAD import ParameterGrp                    # type: ignore
-    from Gui import ViewProviderDocumentObject          # type: ignore
+    from FreeCADGui import ViewProviderDocumentObject   # type: ignore
     from PySide2.QtWidgets import QMenu, QMessageBox    # type: ignore
     from Part import Shape                              # type: ignore
 else:
