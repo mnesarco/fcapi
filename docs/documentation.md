@@ -5,7 +5,7 @@ license: "LGPL 2.1"
 version: "1.0.0-beta2"
 min_python: "3.8"
 min_freecad: "0.21"
-date: "2024-10-12 20:04:43.432720"
+date: "2024-11-10 10:29:15.351080"
 geometry: "margin=2cm"
 ---
 
@@ -14,13 +14,15 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-10-12 20:04:43.439756                        |
+| __generated__     | 2024-11-10 10:29:15.358804                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
 | __version__       | 1.0.0-beta2                                       |
 | __min_python__    | 3.8                                               |
 | __min_freecad__   | 0.21                                              |
+
+
 
 
 # TABLE OF CONTENTS
@@ -63,7 +65,6 @@ geometry: "margin=2cm"
 * [Properties](#properties)
     * [Declaring properties](#declaring-properties)
         * [Property constructors](#property-constructors)
-            * [Examples](#examples)
         * [Property modes](#property-modes)
         * [Property Editor modes](#property-editor-modes)
         * [Property change listener](#property-change-listener)
@@ -92,17 +93,27 @@ geometry: "margin=2cm"
     * [@proxy](#proxy)
     * [@view_proxy](#view_proxy)
     * [Display Modes](#display-modes)
+        * [Function: DisplayMode](#function-displaymode)
 * [Extensions](#extensions)
     * [Available Object Extensions](#available-object-extensions)
     * [Available View extensions](#available-view-extensions)
 * [Migrations](#migrations)
     * [@migrations decorator](#migrations-decorator)
+        * [Function: migrations](#function-migrations)
 * [FreeCAD Preferences](#freecad-preferences)
     * [Preferences API](#preferences-api)
         * [Preference](#preference)
         * [@Preference.subscribe](#preference-subscribe)
 * [Utility functions reference](#utility-functions-reference)
     * [Global functions in fpo module](#global-functions-in-fpo-module)
+        * [Function: get_selection](#function-get_selection)
+        * [Function: set_immutable_prop](#function-set_immutable_prop)
+        * [Function: message_box](#function-message_box)
+        * [Function: confirm_box](#function-confirm_box)
+        * [Function: print_log](#function-print_log)
+        * [Function: print_err](#function-print_err)
+        * [Function: get_pd_active_body](#function-get_pd_active_body)
+        * [Function: set_pd_shape](#function-set_pd_shape)
 * [Compatibility notes](#compatibility-notes)
     * [Serialization and deserialization](#serialization-and-deserialization)
     * [Official documentation sources:](#official-documentation-sources)
@@ -114,6 +125,7 @@ geometry: "margin=2cm"
     * [Examples setup](#examples-setup)
 
 
+
 <p style="page-break-after: always; break-after: page;"></p>
 
 
@@ -121,15 +133,15 @@ geometry: "margin=2cm"
 
 ## Disclaimer
 
-All of the following information is the result of my own research and usage of 
-the FreeCAD's Python APIs along several years. It reflects my very own view, 
-coding style and limited understanding of FreeCAD internals. All the content 
-is based on official docs, forum discussions, development of my own extensions, 
+All of the following information is the result of my own research and usage of
+the FreeCAD's Python APIs along several years. It reflects my very own view,
+coding style and limited understanding of FreeCAD internals. All the content
+is based on official docs, forum discussions, development of my own extensions,
 reading code of existing extensions and FreeCAD sources.
 
-This document does not cover 100% of the API yet because there are still some 
+This document does not cover 100% of the API yet because there are still some
 obscure methods that can be overridden from the Python Proxies but there is no
-enough documentation of them, I have never used them or I have not found usage 
+enough documentation of them, I have never used them or I have not found usage
 examples. My goal is to cover all of the supported features but it will take time.
 
 
@@ -138,8 +150,8 @@ examples. My goal is to cover all of the supported features but it will take tim
 This is a technical document for developers of FreeCAD extensions commonly known
 as Feature Python Objects or more generally Scripted Objects.
 
-General programming experience, some basic FreeCAD know-how and a minimalistic 
-comprehension of Python are sufficient, as long as you can search the internet 
+General programming experience, some basic FreeCAD know-how and a minimalistic
+comprehension of Python are sufficient, as long as you can search the internet
 for a basic grasp of classes, functions, decorators, type hints, etc...;)
 
 It is also expected that the readers are FreeCAD users, and have a good understanding
@@ -148,14 +160,14 @@ of the basic usage of it.
 
 ## Goals
 
-* The API must be developer friendly, consistent, maintainable and compatible 
+* The API must be developer friendly, consistent, maintainable and compatible
   with FC 0.21+
-* The API must be an overlay on top of the existing API, so no conflicts 
+* The API must be an overlay on top of the existing API, so no conflicts
   with existing code.
 * The API must be 100% documented.
-* Old code and new code can be mixed, so existing projects can be upgraded 
+* Old code and new code can be mixed, so existing projects can be upgraded
   gradually if desired.
-* Include a tiny documentation generator to produce compact, nice and readable 
+* Include a tiny documentation generator to produce compact, nice and readable
   documentation of this API for developers.
 
 
@@ -206,17 +218,17 @@ of the basic usage of it.
 
 # General Scripted Object Architecture
 
-Despite the widespread use of the name *FeaturePythonObject*, this is a 
-concept and not a specific class in the Python API. Maybe a better name should 
-be `ScriptedObject`. Every `ScriptedObject` has two main components: The Data 
-component and the View component. Each main component is also divided in two 
-parts: the FreeCAD object and the python Proxy object. All these 4 pieces 
+Despite the widespread use of the name *FeaturePythonObject*, this is a
+concept and not a specific class in the Python API. Maybe a better name should
+be `ScriptedObject`. Every `ScriptedObject` has two main components: The Data
+component and the View component. Each main component is also divided in two
+parts: the FreeCAD object and the python Proxy object. All these 4 pieces
 conforms the `ScriptedObject` concept. It is more clear in the following diagram:
 
 
 ## Scripted Object Overview diagram
 
-![arch](overview.svg)
+![arch](images/overview.svg)
 
 > [!IMPORTANT]
 > So to develop your own `ScriptedObject`, you need to create at least one class
@@ -235,8 +247,8 @@ are instantiated from python using `document.addObject(...)`
 
 See: https://wiki.freecad.org/Scripted_objects
 
-`App::FeaturePython` and `Part::FeaturePython` are the most common DocumentObject 
-classes used to create custom objects in FreeCAD, but there are many more types 
+`App::FeaturePython` and `Part::FeaturePython` are the most common DocumentObject
+classes used to create custom objects in FreeCAD, but there are many more types
 supported:
 
 <a name='supported-feature-types'></a>
@@ -292,13 +304,13 @@ supported:
 * Forum Source: https://forum.freecad.org/viewtopic.php?t=86414&start=10#p752318
 
 > [!NOTE]
-> There is an official class diagram, but it does not include scriptable objects 
+> There is an official class diagram, but it does not include scriptable objects
 > apart from `App::FeaturePython`. See https://wiki.freecad.org/File:FreeCAD_core_objects.svg
 
 
 ## Gui::ViewProvider
 
-> `ViewProviders` are classes that define the way objects will look like in the 
+> `ViewProviders` are classes that define the way objects will look like in the
 > tree view and the 3D view, and how they will interact with certain graphical
 > actions such as selection.
 
@@ -307,11 +319,11 @@ Source: https://wiki.freecad.org/Viewprovider
 
 ## DataProxy
 
-This is a python class responsible for managing all the data logic of your 
-`ScriptedObject`, it creates the data properties and executes the required 
-code on *document recompute*. We will see the details later. 
+This is a python class responsible for managing all the data logic of your
+`ScriptedObject`, it creates the data properties and executes the required
+code on *document recompute*. We will see the details later.
 
-This class is also responsible for serializing/deserializing its own internal 
+This class is also responsible for serializing/deserializing its own internal
 state from/to the document.
 
 To define a `DataProxy` class, just define a class and decorate it with
@@ -323,7 +335,7 @@ from fpo import proxy, PropertyLength, print_log
 @proxy()
 class MyCustomObjectProxy:
     length = PropertyLength(default=5)
-    
+
     def on_execute(self, obj):
         print_log("length=", self.length)
         ...
@@ -332,17 +344,17 @@ class MyCustomObjectProxy:
 obj = MyCustomObjectProxy.create(name="MyThing")
 ```
 
-The name of the class is irrelevant, but using *Proxy* as suffix looks like a 
+The name of the class is irrelevant, but using *Proxy* as suffix looks like a
 good naming convention.
 
 
 ## ViewProxy
 
-This is a python class responsible for managing all the presentation logic of your 
-`ScriptedObject`, it creates the presentation properties and executes the required code to 
-display the `ScriptedObject` in the Tree and in the 3D scene. We will see the details later. 
+This is a python class responsible for managing all the presentation logic of your
+`ScriptedObject`, it creates the presentation properties and executes the required code to
+display the `ScriptedObject` in the Tree and in the 3D scene. We will see the details later.
 
-This class is also responsible for serializing/deserializing is own internal 
+This class is also responsible for serializing/deserializing is own internal
 state from/to the document.
 
 To define a `ViewProxy` class just define a class and annotate it with
@@ -358,10 +370,10 @@ class MyCustomObjectViewProxy:
 
 ```
 
-The name of the class is irrelevant, but using *ViewProxy* as suffix looks like 
+The name of the class is irrelevant, but using *ViewProxy* as suffix looks like
 a good naming convention.
 
-To bind the `Proxy` and the `ViewProxy` together, you specify the `ViewProxy` as 
+To bind the `Proxy` and the `ViewProxy` together, you specify the `ViewProxy` as
 an argument of the `@proxy` decorator.
 
 ```python
@@ -374,7 +386,7 @@ class MyCustomViewProxy:
 @proxy(view_proxy=MyCustomViewProxy)  # <-- associate DataProxy with ViewProxy
 class MyCustomObjectProxy:
     ...
-    
+
 # -----
 obj = MyCustomObjectProxy.create(name="MyThing")
 ```
@@ -411,7 +423,7 @@ obj = MyCustomObjectProxy.create(name="MyThing")
 
 # DataProxy Lifecycle
 
-Every `DataProxy` object has a lifecycle. You can observe state changes 
+Every `DataProxy` object has a lifecycle. You can observe state changes
 using the appropriate event listeners to add your custom logic.
 
 ## All possible states
@@ -430,23 +442,23 @@ using the appropriate event listeners to add your custom logic.
 | Migrating     | (virtual) Migration code is running                          |
 
 
-> [!NOTE] 
-> Virtual states are pure conceptual, they are not present in the code but helps 
+> [!NOTE]
+> Virtual states are pure conceptual, they are not present in the code but helps
 > to understand the lifecycle.
 > Hidden states are not observable (there are no event handlers for them)
 
-The following diagram shows the complete lifecycle: 
+The following diagram shows the complete lifecycle:
 
 
 ### Lifecycle diagram
 
-![Lifecycle Diagram](states.svg)
+![Lifecycle Diagram](images/states.svg)
 
 
 ## State event listeners
 
-To listen to a specific state change event, you create an event handler for that 
-specific event. That is a simple method in your class with the correct signature. 
+To listen to a specific state change event, you create an event handler for that
+specific event. That is a simple method in your class with the correct signature.
 All listeners are of course optional.
 
 Using state change listeners you can inject any custom logic in the right place.
@@ -458,7 +470,7 @@ from fpo import proxy
 
 @proxy()
 class MyCustomObjectProxy:
-    
+
     def on_create(self, fpo):
         print("My Object was created")
 
@@ -473,7 +485,7 @@ class MyCustomObjectProxy:
 
     def on_restore(self, fpo):
         print("My Object was loaded from the file")
-    
+
     ...
 ```
 
@@ -493,7 +505,7 @@ Document.
 def on_create(self: Proxy, fpo: DocumentObject) -> None
 ```
 
-Called when the object is created and after all properties are created 
+Called when the object is created and after all properties are created
 and all migrations are applied.
 
 
@@ -503,8 +515,8 @@ and all migrations are applied.
 def on_start(self: Proxy, fpo: DocumentObject) -> None
 ```
 
-Called after the object is created the first time or after restored from the 
-document. Usually any custom initialization logic must be done here.    
+Called after the object is created the first time or after restored from the
+document. Usually any custom initialization logic must be done here.
 
 
 ### on_remove
@@ -528,7 +540,7 @@ Called when the object is restored from the *FCStd* file
 ## Persistence events listeners
 
 FreeCAD is responsible for managing the persistence of the `DocumentObjects` and
-`ViewProviders` but your `Proxy` classes are responsible for persisting/loading 
+`ViewProviders` but your `Proxy` classes are responsible for persisting/loading
 its own internal state from/to the document.
 
 ### on_serialize
@@ -537,7 +549,7 @@ its own internal state from/to the document.
 def on_serialize(self: Proxy, state: Dict[str, Any]) -> None
 ```
 
-This method is called to collect data from your object and store it in the 
+This method is called to collect data from your object and store it in the
 document, all that you have to do is include your state into the state dictionary.
 
 ```python
@@ -575,7 +587,7 @@ from fpo import proxy
 class MyCustomObjectProxy:
     var1: str
     var2: int
-    
+
     def on_deserialize(self, state: Dict[str, Any]):
         self.var1 = state.get('my_value_1', '')
         self.var2 = state.get('my_value_2', 0)
@@ -586,7 +598,7 @@ class MyCustomObjectProxy:
 
 ## Active event handlers
 
-When your `ScriptedObject` is Active, all your work is performed in `on_execute` 
+When your `ScriptedObject` is Active, all your work is performed in `on_execute`
 and `on_change` event listeners.
 
 ### on_execute
@@ -595,7 +607,7 @@ and `on_change` event listeners.
 def on_execute(self: Proxy, fpo: DocumentObject) -> None
 ```
 
-This method is where you place the main scripting code of your `ScriptedObject`, 
+This method is where you place the main scripting code of your `ScriptedObject`,
 this is called on document recompute if the object is marked as dirty (changed).
 
 ```python
@@ -607,11 +619,11 @@ class CustomBoxProxy:
     width = PropertyLength(default=5.0, description='Width of the box')
     length = PropertyLength(default=5.0, description='Length of the box')
     height = PropertyLength(default=5.0, description='Height of the box')
-   
+
     def on_execute(self, fpo):
         # Your magic happens here
         fpo.Shape = Part.makeBox(self.length, self.width, self.height)
-    
+
     ...
 
 # -----
@@ -621,7 +633,7 @@ obj = CustomBoxProxy.create(name='box1')
 ### on_change
 
 ```python
-def on_change(self: Proxy, fpo: DocumentObject, 
+def on_change(self: Proxy, fpo: DocumentObject,
               prop_name: str, new_value: Any, old_value: Any) -> None
 ```
 
@@ -630,7 +642,7 @@ Called after any property has changed.
 ### on_before_change
 
 ```python
-def on_before_change(self: Proxy, fpo: DocumentObject, 
+def on_before_change(self: Proxy, fpo: DocumentObject,
               prop_name: str, old_value: Any) -> None
 ```
 
@@ -650,7 +662,7 @@ class CustomBoxProxy:
     # Your magic happens here
     def on_execute(self, fpo):
         fpo.Shape = Part.makeBox(self.length, self.width, self.height)
-    
+
     @length.observer
     def length_changed(self, fp, new_value, old_value):
         print(f"Hey! length has changed from {old_Value} to {new_value}")
@@ -667,11 +679,11 @@ def on_extension(self: Proxy, fpo: DocumentObject, extension: str) -> None
 ```
 
 Called when an extension is added to the object. Extensions add predefined
-behaviors to the `DocumentObject`, making it behave like a group, link, 
+behaviors to the `DocumentObject`, making it behave like a group, link,
 attachable, etc... see: [extensions](#available-object-extensions)
 
 
-## Hooks 
+## Hooks
 
 More optional methods called by FreeCAD to get some info from the Proxy
 
@@ -697,7 +709,7 @@ Return True if your `DataProxy` in a state that requires *recompute*
 
 # Properties
 
-The main interaction between your `ScriptedObject` and the user is by managing property 
+The main interaction between your `ScriptedObject` and the user is by managing property
 values, the user sets the property values and you do something useful with that.
 
 Properties are declared using special property constructors, there is one constructor
@@ -721,7 +733,7 @@ class MyMagicProxy:
     @my_property.observer
     def my_property_obs(self, fp, new_value, old_value):
         print(f"my_property has changed from {old_value} to {new_value}")
-        
+
 ```
 
 ### Property constructors
@@ -733,7 +745,7 @@ def Property{__property_type__}(
         default: Any = None,
         description: str = '',
         mode: PropertyMode = PropertyMode.Default,
-        observer_func: Callable = None,        
+        observer_func: Callable = None,
         link_property: str = None,
         enum: Enum = None,
         options: Callable[[], List[str]] = None)
@@ -768,7 +780,7 @@ class MyProxy:
 
 ### Property modes
 
-On property declaration, you can specify a mode or a combination of them. 
+On property declaration, you can specify a mode or a combination of them.
 Supported modes are the following:
 
 
@@ -811,7 +823,7 @@ class MyMagicProxy
     @my_prop1.observer
     def listener1(self, fp, new_value, old_value):
         print(f"my_property1 has changed from {old_value} to {new_value}")
-        
+
     @my_prop2.observer
     def listener2(self, fp, new_value):
         print(f"my_property2 has changed {new_value}")
@@ -819,7 +831,7 @@ class MyMagicProxy
     @my_prop3.observer
     def listener3(self, fp):
         print(f"my_property3 has changed")
-        
+
 ```
 
 > [!IMPORTANT]
@@ -836,27 +848,27 @@ property name. It is internally proxyfied to the actual `DocumentObject`.
 @proxy()
 class MyMagicProxy
     my_property1 = PropertyInteger(section="Basic", default=5)
-        
+
     def on_execute(self, fp):
-    
+
         # Transparently access the property from the remote object
         x = self.my_property1
-    
+
         # Transparently update the property from the remote object
         self.my_property1 = 10
-        
+
 ```
 
 > [!NOTE]
 > Properties are only proxies of the actual properties in the internal FreeCAD
 > object (`DocumentObject`). So persistence is managed by FreeCAD. additional state of your
-> proxy object must be serialized/deserialized by you in 
+> proxy object must be serialized/deserialized by you in
 > `on_serialize` / `on_deserialize` listeners.
 
 
 ## Creating properties programmatically
 
-It is also possible to create properties programmatically using the direct API, 
+It is also possible to create properties programmatically using the direct API,
 but in that case you manage them directly from the object.
 
 ```python
@@ -866,15 +878,15 @@ class MyMagicProxy
     def on_start(self, fp):
         if not hasattr(fp, 'Length'):
             fp.addProperty(
-                "App::PropertyLength", 
+                "App::PropertyLength",
                 "Length", "Box", "Length of the box").Length = 1.0
-        
-    def on_execute(self, fp):    
+
+    def on_execute(self, fp):
         # read
-        x = fp.Length    
+        x = fp.Length
         # write
         fp.Length = 10
-        
+
 ```
 
 
@@ -922,7 +934,7 @@ Called when the user terminates editing. See [edit modes](#edit-modes)
 def on_dbl_click(self, vp: ViewObject) -> bool
 ```
 
-Called when the user double clicks the Tree Node. Return True to tell the core 
+Called when the user double clicks the Tree Node. Return True to tell the core
 system that you handled the action already.
 
 ## on_context_menu
@@ -1037,7 +1049,7 @@ relatively to the file where the class is declared.
 | Color(3)        | The object will have the color of its individual faces editable with the Part FaceColors command  |
 
 
-# Main Decorators 
+# Main Decorators
 
 There are two entry points for the API, the `DataProxy` and the
 `ViewProxy`. Both of them are created decorating a class with the
@@ -1050,7 +1062,7 @@ corresponding decorators `@proxy` and `@view_proxy` respectively.
 @proxy(
     object_type: str = 'App::FeaturePython',
     subtype: str = None,
-    view_proxy: ViewProxy = None, 
+    view_proxy: ViewProxy = None,
     extensions: Iterable[str] = None,
     view_provider_name_override: str = None,
     version: int = 1)
@@ -1073,10 +1085,10 @@ lifecycle management, versioning, proxyfied properties, extensions, etc...
 ## @view_proxy
 
 Converts a user defined class into a full blown `ViewProxy` with all of the
-lifecycle management, proxyfied properties, extensions, display mode builders, 
+lifecycle management, proxyfied properties, extensions, display mode builders,
 etc...
 
-```python 
+```python
 @view_proxy(
     view_provider_name_override: str = None,
     extensions: Iterable[str] = None,
@@ -1100,14 +1112,16 @@ Display modes are implemented by FreeCAD using `coin` objects, usually `SoGroup`
 `SoSeparator`. Each display mode has a name, an optional method builder that builds
 the coin object and optionally can be marked as default mode.
 
+### Function: DisplayMode
 
-### *function:* __DisplayMode__
+#### Signature / DisplayMode
 
 ```python
-def DisplayMode(name: str = None, is_default: bool = False, builder: Callable = None)
+def DisplayMode(name: str=None, is_default: bool=False, builder: Callable=None): ...
 ```
-Declarator of Display Modes, allows to configure a mode and optionally
-a builder method to create and register the coin object.
+
+
+#### Docs / DisplayMode
 
 
 | Argument       | Type           | Description                                |
@@ -1115,6 +1129,10 @@ a builder method to create and register the coin object.
 | name           | str            | Name of the display mode                   |
 | is_default     | bool           | Configure the DM as default, defaults to False|
 | builder        | Callable[[ViewObject], coin.SoGroup]| Method to build the coin object if required|
+
+
+Declarator of Display Modes, allows to configure a mode and optionally
+a builder method to create and register the coin object.
 
 Example:
 
@@ -1134,7 +1152,7 @@ class MyViewProxy:
 # Extensions
 
 Extensions are predefined behaviors that can be added to the `DocumentObject` or
-`ViewObject` to add functionality. 
+`ViewObject` to add functionality.
 
 ## Available Object Extensions
 
@@ -1192,7 +1210,7 @@ class FpoClass:
         # Called if migration fails
 
     ...
-        
+
 ```
 
 ## Migrations using a different `DataProxy` class
@@ -1202,13 +1220,13 @@ Some times you refactor your code and move the file that declares your
 old module is persisted in the FCStd file. In this situation you need to do
 a redirection from the old file to the new one.
 
-Suppose that your old `DataProxy` was defined as a class named `OriginalFpo` in a file 
-named `original.py` and you decided to move it to a file named `better.py` and 
-renamed your class to BetterFpo. You need to redirect calls from the old 
-file/class to the new one, and also apply some migration logic to convert the 
+Suppose that your old `DataProxy` was defined as a class named `OriginalFpo` in a file
+named `original.py` and you decided to move it to a file named `better.py` and
+renamed your class to BetterFpo. You need to redirect calls from the old
+file/class to the new one, and also apply some migration logic to convert the
 old version into the new version.
 
-In your new file `better.py` you have your new class, nothing special is 
+In your new file `better.py` you have your new class, nothing special is
 required there.
 
 ```python
@@ -1224,8 +1242,8 @@ class BetterFpo:
 
 ```
 
-Now you have to redirect old calls from the old file to the new one. So just 
-create a class with the old name but make it into a migration, the migration 
+Now you have to redirect old calls from the old file to the new one. So just
+create a class with the old name but make it into a migration, the migration
 will take care of calling your logic and redirecting to the new class after it.
 
 ```python
@@ -1240,7 +1258,7 @@ class OriginalFpo:
 
     def on_migrate_class(self, version, fp):
         # Perform any migration logic here ....
-        
+
         # Then rebind to the new class
         BetterFpo.rebind(fp) # Reinitialize fp as the new Fpo
 
@@ -1249,18 +1267,24 @@ class OriginalFpo:
 
 ## @migrations decorator
 
+### Function: migrations
 
-### *function:* __migrations__
+#### Signature / migrations
 
 ```python
-def migrations(current=None)
+def migrations(current: type=None): ...
 ```
-Install migrations management into the class.
+
+
+#### Docs / migrations
 
 
 | Argument       | Type           | Description                                |
 |----------------|----------------|--------------------------------------------|
 | current        | ProxyClass     | most recent class, if omitted, the same class is used.|
+
+
+Install migrations management into the class.
 
 Example:
 
@@ -1304,7 +1328,7 @@ preference:
 
 #------
 # file: preferences.py
-#  Declare preferences wherever you want, 
+#  Declare preferences wherever you want,
 #  but usually in some `preferences.py` module
 #  so you can reuse from everywhere.
 from fpo import Preference
@@ -1382,19 +1406,34 @@ on_preference_change.unsubscribe()
 
 # Utility functions reference
 
-There are also few global functions that are frequently used in 
+There are also few global functions that are frequently used in
 `ScriptedObject` development. So I included them here for quick reference because
 they are used in the examples.
 
 
 ## Global functions in fpo module
+### Function: get_selection
 
-
-### *function:* __get_selection__
+#### Signature / get_selection
 
 ```python
-def get_selection(*args) -> Tuple
+def get_selection(*args) -> Tuple: ...
 ```
+
+
+#### Docs / get_selection
+
+
+| Return type    | Description                                       |
+|----------------|---------------------------------------------------|
+| List[DocumentObject]| If no arguments are supplied, the list of selected objects|
+| bool, *List[DocumentObject]| If arguments are supplied, the first element returned    says if the selection matches the patterns, the rest are the selected objects in order|
+
+| Argument       | Type           | Description                                |
+|----------------|----------------|--------------------------------------------|
+| *args          | *[str\|re.Pattern]| List of patterns                           |
+
+
 Returns current selection in specific order and matching specific types.
 
 case 1: no args, just returns selection as list:
@@ -1417,7 +1456,7 @@ if ok:
     ...
 ```
 
-this will parse selection for three elements, first one must be a 
+this will parse selection for three elements, first one must be a
 `PartDesign::Line`, second one must be any object from the Part namespace,
 the last one can be anything. The user can select them
 in any order but they will be returned in the specified order. Take
@@ -1427,23 +1466,16 @@ specify patterns from more specific to least specific.
 In this invocation schema, the first element of the returned tuple
 is a boolean that indicate if the selection matches the patterns.
 
-| Return type    | Description                                       |
-|----------------|---------------------------------------------------|
-| List[DocumentObject]| If no arguments are supplied, the list of selected objects|
-| bool, *List[DocumentObject]| If arguments are supplied, the first element returned    says if the selection matches the patterns, the rest are the selected objects in order|
+### Function: set_immutable_prop
 
-| Argument       | Type           | Description                                |
-|----------------|----------------|--------------------------------------------|
-| *args          | *[str\|re.Pattern]| List of patterns                           |
-
-
-### *function:* __set_immutable_prop__
+#### Signature / set_immutable_prop
 
 ```python
-def set_immutable_prop(obj: Union[DocumentObject, ViewProviderDocumentObject], name: str, value: Any) -> None
+def set_immutable_prop(obj: ObjectRef, name: str, value: Any) -> None: ...
 ```
-Force update a property with Immutable status. It temporarily removes the
-immutable flag, sets the value and restore the flag if required.
+
+
+#### Docs / set_immutable_prop
 
 
 | Argument       | Type           | Description                                |
@@ -1453,13 +1485,19 @@ immutable flag, sets the value and restore the flag if required.
 | value          | Any            | the value                                  |
 
 
-### *function:* __message_box__
+Force update a property with Immutable status. It temporarily removes the
+immutable flag, sets the value and restore the flag if required.
+
+### Function: message_box
+
+#### Signature / message_box
 
 ```python
-def message_box(message: str, title: str = 'Message', details: str = None)
+def message_box(message: str, title: str='Message', details: str=None): ...
 ```
-Shows a basic message dialog (modal) if `App.GuiUp` is True, else prints to
-the console.
+
+
+#### Docs / message_box
 
 
 | Argument       | Type           | Description                                |
@@ -1469,12 +1507,20 @@ the console.
 | details        | str            | expandable text, defaults to None          |
 
 
-### *function:* __confirm_box__
+Shows a basic message dialog (modal) if `App.GuiUp` is True, else prints to
+the console.
+
+### Function: confirm_box
+
+#### Signature / confirm_box
 
 ```python
-def confirm_box(message: str, title: str = 'Message', details: str = None) -> bool
+def confirm_box(message: str, title: str='Message', details: str=None) -> bool: ...
 ```
-Ask for a confirmation with a basic dialog. Requires App.GuiUp == True
+
+
+#### Docs / confirm_box
+
 
 | Return type    | Description                                       |
 |----------------|---------------------------------------------------|
@@ -1487,39 +1533,67 @@ Ask for a confirmation with a basic dialog. Requires App.GuiUp == True
 | details        | str            | expandable text, defaults to None          |
 
 
-### *function:* __print_log__
+Ask for a confirmation with a basic dialog. Requires App.GuiUp == True
+
+### Function: print_log
+
+#### Signature / print_log
 
 ```python
-def print_log(*args)
+def print_log(*args): ...
 ```
+
+
+#### Docs / print_log
+
+
 Print into the FreeCAD console with info level.
 
+### Function: print_err
 
-### *function:* __print_err__
+#### Signature / print_err
 
 ```python
-def print_err(*args)
+def print_err(*args): ...
 ```
+
+
+#### Docs / print_err
+
+
 Print into the FreeCAD console with error level.
 
+### Function: get_pd_active_body
 
-### *function:* __get_pd_active_body__
+#### Signature / get_pd_active_body
 
 ```python
-def get_pd_active_body() -> PartDesign_Body
+def get_pd_active_body(): ...
 ```
-Retrieve the active PartDesign Body if any
+
+
+#### Docs / get_pd_active_body
+
 
 | Return type    | Description                                       |
 |----------------|---------------------------------------------------|
-| PartDesign_Body| Active Body                                       |
+| PartDesign.Body| Active Body                                       |
 
 
-### *function:* __set_pd_shape__
+Retrieve the active PartDesign Body if any
+
+### Function: set_pd_shape
+
+#### Signature / set_pd_shape
 
 ```python
-def set_pd_shape(fp: DocumentObject, shape: Shape) -> None
+def set_pd_shape(fp: DocumentObject, shape: Shape) -> None: ...
 ```
+
+
+#### Docs / set_pd_shape
+
+
 Prepare the shape for usage in PartDesign and sets `Shape` and `AddSubShape`
 
 
@@ -1532,7 +1606,7 @@ State serialization process used to be managed by methods named
 were renamed to `dumps / loads` in recent versions due to conflicts
 with python 3.11+.
 
-This backwards compatibility issue is transparently managed by this API, 
+This backwards compatibility issue is transparently managed by this API,
 but it also was fixed in master recently:
 
 * https://github.com/FreeCAD/FreeCAD/pull/12243
@@ -1559,20 +1633,20 @@ in order to imply increasing complexity, I do not repeat comments that were alre
 present in previous examples.
 
 
-| script               | Description                              | Image |
-|----------------------|------------------------------------------|-------|
-| ex1_basic.py         | example with one property                |       ![ex1_basic.py](ex1_basic.png) |
-| ex2_cube.py          | part example with one Shape              |       ![ex2_cube.py](ex2_cube.png) |
-| ex3_spring.py        | part example with one Shape              |       ![ex3_spring.py](ex3_spring.png) |
-| ex4_attachable.py    | part example with one attachable Shape   |       ![ex4_attachable.py](ex4_attachable.png) |
-| ex5_link.py          | Object with Link behavior                |       ![ex5_link.py](ex5_link.png) |
-| ex6_link_array.py    | Object with Link array behavior          |       ![ex6_link_array.py](ex6_link_array.png) |
-| ex7_icon.py          | Using a ViewProxy to setup the icon      |       ![ex7_icon.py](ex7_icon.png) |
-| ex8_display_modes.py | Using a ViewProxy to setup display modes |       ![ex8_display_modes.py](ex8_display_modes.png) |
-| ex9_migrations.py    | Basic migration                          |       |
-| ex10_part_design.py  | Object compatible with PartDesign        |       ![ex10_part_design.py](ex10_part_design.png) |
-| ex11_undo_redo.py    | Transactional undo/redo aware code       |       |
-| ex12_group.py, ex13_docgroup.py | Group behavior                |       ![ex12_group.py](ex12_group.png)             |
+| script               | Description                              | Image    |
+|----------------------|------------------------------------------|----------|
+| ex1_basic.py         | example with one property                |          ![ex1_basic.py](images/ex1_basic.png) |
+| ex2_cube.py          | part example with one Shape              |          ![ex2_cube.py](images/ex2_cube.png) |
+| ex3_spring.py        | part example with one Shape              |          ![ex3_spring.py](images/ex3_spring.png) |
+| ex4_attachable.py    | part example with one attachable Shape   |          ![ex4_attachable.py](images/ex4_attachable.png) |
+| ex5_link.py          | Object with Link behavior                |          ![ex5_link.py](images/ex5_link.png) |
+| ex6_link_array.py    | Object with Link array behavior          |          ![ex6_link_array.py](images/ex6_link_array.png) |
+| ex7_icon.py          | Using a ViewProxy to setup the icon      |          ![ex7_icon.py](images/ex7_icon.png) |
+| ex8_display_modes.py | Using a ViewProxy to setup display modes |          ![ex8_display_modes.py](images/ex8_display_modes.png) |
+| ex9_migrations.py    | Basic migration                          |          |
+| ex10_part_design.py  | Object compatible with PartDesign        |          ![ex10_part_design.py](images/ex10_part_design.png) |
+| ex11_undo_redo.py    | Transactional undo/redo aware code       |          |
+| ex12_group.py, ex13_docgroup.py | Group behavior                |          ![ex12_group.py](images/ex12_group.png)  |
 
 
 # Quick setup
@@ -1582,8 +1656,8 @@ as it is not a FreeCAD core thing by now.
 
 ## Usage from a Workbench
 
-Put `fpo.py` in your *Workbench* folder and use it. It is supposed that this API 
-is used for *Workbench* developers so no other special configuration is required 
+Put `fpo.py` in your *Workbench* folder and use it. It is supposed that this API
+is used for *Workbench* developers so no other special configuration is required
 for that case.
 
 As `fpo.py` is not part of the core FreeCAD distribution, it is possible that other
@@ -1609,25 +1683,25 @@ module of the freecad package.
 
 ## Usage from Macros
 
-It is better to not define your proxy classes directly in __Macros__ 
+It is better to not define your proxy classes directly in __Macros__
 because FreeCAD will have have a hard time finding them when reloading the
 objects from saved documents.
 
 What you can do in this case is putting the `fpo.py` file directly in the FreeCAD's
-__Macros__ directory, then create your proxy classes in its own file in 
-__Macros__ dir, then import them from your macros. That way FreeCAD will 
+__Macros__ directory, then create your proxy classes in its own file in
+__Macros__ dir, then import them from your macros. That way FreeCAD will
 find the Proxies next time you open your Documents.
 
 ## Quick and dirty setup
 
 Another easy way if you don't want to develop a *Workbench* is to fake one,
-To do that simply create a folder inside FreeCAD's Mod directory and put `fpo.py` 
-and your other python files there. This will make fpo and your modules visible 
-and importable from to FreeCAD. 
+To do that simply create a folder inside FreeCAD's Mod directory and put `fpo.py`
+and your other python files there. This will make fpo and your modules visible
+and importable from to FreeCAD.
 
 ## Examples setup
 
-Copy `fpo.py` and `examples/*` (the files, not the directory) into FreeCAD's 
+Copy `fpo.py` and `examples/*` (the files, not the directory) into FreeCAD's
 *Macro* dir. then you can run the examples from the FreeCAD's python console:
 
 ```python
@@ -1641,4 +1715,4 @@ ex10.create_cube_pd()
 ```
 
 > [!IMPORTANT]
-> Copy `fpo.py` in __only one place__ to avoid a name conflicts.
+> Copy `fpo.py` in __only one place__ to avoid name conflicts.
