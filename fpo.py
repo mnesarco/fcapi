@@ -53,7 +53,7 @@ from pathlib import Path
 import FreeCAD as App  # type: ignore
 from FreeCAD import Document  # type: ignore
 from FreeCAD import DocumentObject  # type: ignore
-from FreeCAD import ParameterGrp  # type: ignore
+# from FreeCAD import ParameterGrp  # type: ignore  !!! Not present in FreeCAD 1.0
 from FreeCADGui import ViewProviderDocumentObject  # type: ignore
 from PySide.QtGui import QMenu, QMessageBox  # type: ignore
 from Part import Shape  # type: ignore
@@ -1006,7 +1006,7 @@ class Preference:
         listeners = dict()
 
         # ─────────
-        def __init__(self, group: ParameterGrp, callback: Callable) -> None:
+        def __init__(self, group, callback: Callable) -> None:
             self.callback = callback
             group.AttachManager(self)
             Preference.ParamObserver.listeners[hash(self)] = group
