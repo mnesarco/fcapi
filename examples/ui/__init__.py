@@ -17,33 +17,3 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
-from fpo import proxy, view_proxy, DisplayMode
-from pivy import coin
-
-# ViewProvider with GroupBehavior
-@view_proxy(
-    extensions=['Gui::ViewProviderGroupExtension']  # <-----
-)
-class MyGroupViewProxy:
-    pass
-
-
-# Proxy with GroupBehavior
-@proxy(
-    object_type='App::FeaturePython',
-    extensions=['App::GroupExtensionPython'],  # <-----
-    view_proxy=MyGroupViewProxy,
-)
-class MyGroupProxy:
-    default = DisplayMode(name='Default', is_default=True)
-    
-    @default.builder
-    def default_dm(self, vo):
-        self._dm = coin.SoGroup()
-        return self._dm
-
-
-# Use by just calling the create method from a macro or directly from the python
-# console
-def create_group():
-    return MyGroupProxy.create(name="MyGroup")

@@ -1,8 +1,10 @@
 {
     "editor.rulers": [
-        80
+        80, 100, 120
     ],
     "cSpell.words": [
+        "cleartext",
+        "fcui",
         "freecad",
         "frenet",
         "getstate",
@@ -11,11 +13,17 @@
         "Muñoz",
         "pdbody",
         "pivy",
+        "pixmap",
+        "Pixmap",
+        "Preselection",
         "proxyfied",
+        "qobject",
         "scriptable",
         "setstate",
         "tmpl",
         "TransformManip",
+        "typora",
+        "unpolish",
         "unsetup",
         "vobject",
         "wireframe"
@@ -122,5 +130,16 @@
             "bold": false,
             "italic": false
         }
-    ]
+    ],
+    "[python]": {
+        "diffEditor.ignoreTrimWhitespace": false,
+        "gitlens.codeLens.symbolScopes": [
+            "!Module"
+        ],
+        "editor.formatOnType": true,
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.wordBasedSuggestions": "off"
+    },
+    "ruff.lineLength": 100,
+    "ruff.nativeServer": true
 }
