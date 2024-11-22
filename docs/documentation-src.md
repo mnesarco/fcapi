@@ -1408,7 +1408,7 @@ present in previous examples.
 | ex10_part_design.py  | Object compatible with PartDesign        |          +
                          ![ex10_part_design.py](images/ex10_part_design.png) |
 | ex11_undo_redo.py    | Transactional undo/redo aware code       |          |
-| ex12_group.py, ex13_docgroup.py | Group behavior                |          +
+| ex13_docgroup.py     | Group behavior                           |          +
                                     ![ex12_group.py](images/ex12_group.png)  |
 :/table
 

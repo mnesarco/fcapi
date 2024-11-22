@@ -5,7 +5,7 @@ license: "LGPL 2.1"
 version: "1.0.0-beta1"
 min_python: "3.8"
 min_freecad: "0.21"
-date: "2024-11-10 10:29:15.389103"
+date: "2024-11-21 21:58:30.448287"
 geometry: "margin=2cm"
 ---
 
@@ -14,7 +14,7 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-11-10 10:29:15.397564                        |
+| __generated__     | 2024-11-21 21:58:30.456690                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
