@@ -1410,6 +1410,8 @@ present in previous examples.
 | ex11_undo_redo.py    | Transactional undo/redo aware code       |          |
 | ex13_docgroup.py     | Group behavior                           |          +
                                     ![ex12_group.py](images/ex12_group.png)  |
+| ex14_sketch.py       | Custom sketch object                     |          +
+                                  ![ex14_sketch.py](images/ex14_sketch.png)  |
 :/table
 
 
