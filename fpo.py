@@ -51,6 +51,7 @@ from pathlib import Path
 import FreeCAD as App  # type: ignore
 from FreeCAD import Document  # type: ignore
 from FreeCAD import DocumentObject  # type: ignore
+
 # from FreeCAD import ParameterGrp  # type: ignore  !!! Not present in FreeCAD 1.0
 from FreeCADGui import ViewProviderDocumentObject  # type: ignore
 from PySide.QtGui import QMenu, QMessageBox  # type: ignore
@@ -997,7 +998,7 @@ class Preference:
         except BaseException:
             print_err(f"Error writing preference: {self}")
 
-    # % ─────────
+    ##% ─────────
     class ParamObserver:
         listeners = dict()
 
@@ -1280,7 +1281,11 @@ def t_proxy_attach(overridden: Any, meta: TypeMeta):
 ##$ ─────────────────────────────────────────────────────────────────────────────
 @template(name="create")
 def t_proxy_create(overridden: Any, meta: TypeMeta):
-    def create(name: str = '', label: str = '', doc: Document = None):
+    def create(
+        name: Union[str, None] = None,
+        label: Union[str, None] = None,
+        doc: Union[Document, None] = None,
+    ):
         """Create the FreeCAD Objects, the Python Proxies and bind them"""
         _name = name or meta.subtype
         proxy = meta.cls()
