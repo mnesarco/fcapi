@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
 #  License as published by the Free Software Foundation; either
@@ -25,8 +23,8 @@ import Part
 # the default App::FeaturePython
 #
 @proxy(
-    object_type="Part::FeaturePython", 
-    extensions=['Part::AttachExtensionPython'])
+    object_type="Part::FeaturePython",
+    extensions=["Part::AttachExtensionPython"])
 class MyAttachableCyl:
     height = PropertyLength(default=50)
     radius = PropertyLength(default=10)
@@ -44,4 +42,3 @@ class MyAttachableCyl:
 # console
 def create_cylinder():
     return MyAttachableCyl.create(name="Cyl")
-

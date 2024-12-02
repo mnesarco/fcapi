@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
 #  License as published by the Free Software Foundation; either
@@ -23,6 +21,7 @@ import FreeCAD as App
 
 # Custom Sketch object that autogenerates circles in a line
 
+
 @fpo.proxy(object_type="Sketcher::SketchObjectPython")  # <----
 class AlignedCircles:
 
@@ -39,4 +38,5 @@ class AlignedCircles:
             sketch.addGeometry(shape, False)
         sketch.recompute()
 
-AlignedCircles.create(name='MyAlignedCircles')
+
+AlignedCircles.create(name="MyAlignedCircles")

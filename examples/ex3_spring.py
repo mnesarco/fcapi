@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
 #  License as published by the Free Software Foundation; either
@@ -21,15 +19,16 @@
 # Copyright of the original file: (c) 2011 Adrian Przekwas LGPL
 
 import Part
-from fpo import proxy, PropertyLength, migrations, print_log, print_err
+from fpo import proxy, PropertyLength
+
 
 @proxy(object_type="Part::FeaturePython")
 class MySpring2:
 
-   pitch = PropertyLength(default=5.0, description='Pitch of the helix')
-   diameter = PropertyLength(default=6.0, description='Diameter of the helix')
-   height = PropertyLength(default=30.0, description='Height of the helix')
-   bar_diameter = PropertyLength(default=3.0, description='Diameter of the bar')
+   pitch = PropertyLength(default=5.0, description="Pitch of the helix")
+   diameter = PropertyLength(default=6.0, description="Diameter of the helix")
+   height = PropertyLength(default=30.0, description="Height of the helix")
+   bar_diameter = PropertyLength(default=3.0, description="Diameter of the bar")
 
    def on_execute(self, obj):
       my_helix = Part.makeHelix(self.pitch, self.height, self.diameter/2)
@@ -50,5 +49,4 @@ class MySpring2:
 # Use by just calling the create method from a macro or directly from the python
 # console
 def create_spring():
-   MySpring2.create(label='My Spring')
-
+   MySpring2.create(label="My Spring")

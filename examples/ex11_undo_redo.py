@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
 #  License as published by the Free Software Foundation; either
@@ -23,32 +21,31 @@ from fpo import transaction
 import ex2_cube as cube
 
 # Lets create one cube in one transaction
-with transaction('One Cube'):
-    cube.create_cube('FirstCube')
+with transaction("One Cube"):
+    cube.create_cube("FirstCube")
 
 # Now lets create 3 cubes in one transaction
-with transaction('Three Cubes'):
-    cube.create_cube('Cube1')
-    cube.create_cube('Cube2')
-    cube.create_cube('Cube3')
+with transaction("Three Cubes"):
+    cube.create_cube("Cube1")
+    cube.create_cube("Cube2")
+    cube.create_cube("Cube3")
 
 # Now you can play with Ctrl+Z (undo), Ctrl+Shift+Z (redo)
 
 # -----
 
 # Aborting a transaction in the middle intentionally
-with transaction('Cancel something') as tx:
+with transaction("Cancel something") as tx:
     for i in range(5):
-        cube.create_cube(f'BadCube{i}')
+        cube.create_cube(f"BadCube{i}")
         if i == 3:
             tx.abort()
 
 # -----
 
 # Recovering from an unexpected error
-with transaction('Bad day'):
+with transaction("Bad day"):
     for i in range(5):
-        cube.create_cube(f'BadCube{i}')
+        cube.create_cube(f"BadCube{i}")
         if i == 3:
-            raise RuntimeError('Something goes wrong')
-        
+            raise RuntimeError("Something goes wrong")
