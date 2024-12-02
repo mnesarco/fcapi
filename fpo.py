@@ -1295,7 +1295,7 @@ def t_proxy_create(overridden: Any, meta: TypeMeta):
         if hasattr(fp, "ViewObject") and hasattr(fp.ViewObject, "Proxy"):
             if view_proxy is None:
                 fp.ViewObject.Proxy = 0
-            elif fp.ViewObject.Proxy != view_proxy:
+            elif fp.ViewObject.Proxy is not view_proxy:
                 fp.ViewObject.Proxy = view_proxy
 
         fp.Label = label or _name
