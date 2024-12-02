@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
 #  License as published by the Free Software Foundation; either
@@ -1049,7 +1047,7 @@ def proxy(
 ):
     """
     Main decorator for DataProxy creation. Decorating a class with @proxy(...)
-    adds support for the new API
+    adds support for the fcapi API
     """
 
     # base dir is useful for relative resource lookup
@@ -1101,7 +1099,7 @@ def view_proxy(
 ):
     """
     Decorator for ViewProxy creation. Decorating a class with @view_proxy(...)
-    adds support for the new API.
+    adds support for the fcapi API.
     """
 
     # base dir is useful for relative resource lookup
@@ -1988,7 +1986,7 @@ def PropertyEnumeration(
     )
 
 
-##: Special constructor for Enumeration property type
+##: Special constructor for Options property type
 ##: ─────────────────────────────────────────────────────────────────────────────
 def PropertyOptions(
     options_provider: Callable,
