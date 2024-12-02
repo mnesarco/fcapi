@@ -1280,7 +1280,7 @@ def t_proxy_attach(overridden: Any, meta: TypeMeta):
 ##$ ─────────────────────────────────────────────────────────────────────────────
 @template(name="create")
 def t_proxy_create(overridden: Any, meta: TypeMeta):
-    def create(name: str = None, label: str = None, doc: Document = None):
+    def create(name: str = '', label: str = '', doc: Document = None):
         """Create the FreeCAD Objects, the Python Proxies and bind them"""
         _name = name or meta.subtype
         proxy = meta.cls()
