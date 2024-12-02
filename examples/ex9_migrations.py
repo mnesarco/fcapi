@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
 #  License as published by the Free Software Foundation; either
@@ -18,9 +16,15 @@
 #
 
 from fpo import (
-    proxy, PropertyInteger, PropertyLength, PropertyAngle, PropertyLink,
-    print_log, migrations, print_err)
-
+    PropertyAngle,
+    PropertyInteger,
+    PropertyLength,
+    PropertyLink,
+    migrations,
+    print_err,
+    print_log,
+    proxy,
+)
 
 # Lets create a minimal ScriptedObject with a bunch of properties and some migrations
 #
@@ -44,22 +48,23 @@ class MyDataVersioned:
     source = PropertyLink()
 
     def on_migrate_upgrade(self, version: int, fp):
-        print_log(f"your code runs here")
+        print_log("your code runs here to upgrade from an older version")
+        print_log(f'"Old" object has version {version}')
         self.set_version(2)
-        
+
     def on_migrate_downgrade(self, version: int, fp):
-        print_log(f"your code runs here")
+        print_log("your code runs here to downgrade from a newer version")
+        print_log(f"Object must be downgraded from version {version}")
         self.set_version(1)
-        
+
     def on_migrate_complete(self, version: int, fp):
-        print_log(f"your code runs here")
-        
+        print_log("your code runs here")
+
     def on_migrate_error(self, version: int, fp):
-        print_err(f"your code runs here")
+        print_err("your code runs here")
 
 
 # Use by just calling the create method from a macro or directly from the python
 # console
 def create_data():
     return MyDataVersioned.create(name="V1")
-

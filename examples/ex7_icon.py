@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
 #  License as published by the Free Software Foundation; either
@@ -17,12 +15,12 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
-from fpo import proxy, view_proxy, PropertyInteger, DisplayMode
+from fpo import proxy, view_proxy, PropertyInteger
 
 
 # ViewProviders allows to control presentation things like the Icon of the
 # Object in the Tree
-@view_proxy(icon='self:compass-drafting-solid.svg')
+@view_proxy(icon="self:compass-drafting-solid.svg")
 class MyDataObjView:
     pass
 
@@ -39,4 +37,3 @@ class MyDataObj:
 # console
 def create_data():
     return MyDataObj.create(name="CustomIcon")
-

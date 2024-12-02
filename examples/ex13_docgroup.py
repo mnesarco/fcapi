@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
 #  License as published by the Free Software Foundation; either
@@ -20,14 +18,14 @@
 from fpo import proxy, view_proxy
 
 # ViewProvider with GroupBehavior
-@view_proxy(icon='self:group.svg')
+@view_proxy(icon="self:group.svg")
 class MyGroupViewProxy:
     pass
 
 
 # Proxy with GroupBehavior
 @proxy(
-    object_type='App::DocumentObjectGroupPython', # <-----
+    object_type="App::DocumentObjectGroupPython", # <-----
     view_proxy=MyGroupViewProxy,
 )
 class MyGroupProxy:

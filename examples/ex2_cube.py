@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
 #  License as published by the Free Software Foundation; either
@@ -41,6 +39,5 @@ class MyCube:
 
 # Use by just calling the create method from a macro or directly from the python
 # console
-def create_cube(name: str = 'Cube'):
+def create_cube(name: str = "Cube"):
     return MyCube.create(name=name)
-

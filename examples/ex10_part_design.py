@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
 #  License as published by the Free Software Foundation; either
@@ -17,14 +15,15 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
-from fpo import proxy, PropertyLength, set_pd_shape, print_err, get_pd_active_body
-import Part, FreeCADGui as Gui, FreeCAD as App
+import Part
+from fpo import PropertyLength, get_pd_active_body, print_err, proxy, set_pd_shape
+
 
 # Here we will create a simple Cube with PartDesign semantic
 #
 @proxy(
     object_type="PartDesign::FeatureAdditivePython",
-    extensions=['Part::AttachExtensionPython'])
+    extensions=["Part::AttachExtensionPython"])
 class PDMyCubeAdd:
     length = PropertyLength(default=10)
     width = PropertyLength(default=10)
@@ -47,7 +46,6 @@ def create_cube_pd():
     if not body:
         print_err("No active body.")
         return
-    
+
     cube = PDMyCubeAdd.create(name="CubeFeature")
     body.addObject(cube)
-

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
 #  License as published by the Free Software Foundation; either
@@ -17,14 +15,14 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
-from fpo import proxy, PropertyLength, view_proxy, DisplayMode
+from fpo import proxy, view_proxy, DisplayMode
 from pivy import coin
 
 # The ViewProxy is responsible for creating the display modes
 @view_proxy()
 class CustomSceneObjectVP:
-    sphere = DisplayMode(name='Sphere', is_default=True)
-    cube = DisplayMode(name='Cube')
+    sphere = DisplayMode(name="Sphere", is_default=True)
+    cube = DisplayMode(name="Cube")
 
     @sphere.builder
     def sphere_dm(self, vo):
@@ -47,4 +45,3 @@ class CustomSceneObject:
 # console
 def create_object():
     return CustomSceneObject.create(name="CustomViewModes")
-
