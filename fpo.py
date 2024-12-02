@@ -868,17 +868,15 @@ class TypeMeta:
         **kwargs,
     ):
         """Call extensions runtime lifecycle"""
-        if self.extensions:
-            for ext in self.extensions:
-                method = getattr(ext, method_name)
-                method(proxy, obj, self, *args, **kwargs)
+        for ext in self.extensions:
+            method = getattr(ext, method_name)
+            method(proxy, obj, self, *args, **kwargs)
 
     # ──────────
     def apply_extensions_on_class(self):
         """Call extensions static lifecycle"""
-        if self.extensions:
-            for ext in self.extensions:
-                ext.on_class(self)
+        for ext in self.extensions:
+            ext.on_class(self)
 
     # ──────────
     def add_version_prop(self, obj: ObjectRef):
