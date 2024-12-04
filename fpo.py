@@ -19,9 +19,9 @@ from __future__ import annotations
 __author__ = "Frank David Martínez Muñoz"
 __copyright__ = "(c) 2024 Frank David Martínez Muñoz."
 __license__ = "LGPL 2.1"
-__version__ = "1.0.0-beta3"
-__min_python__ = "3.8"
-__min_freecad__ = "0.21"
+__version__ = "1.0.0-beta4"
+__min_python__ = "3.10"
+__min_freecad__ = "0.22"
 
 
 # Conventions for sections in this file:
@@ -38,7 +38,7 @@ __min_freecad__ = "0.21"
 # General imports
 # ──────────────────────────────────────────────────────────────────────────────
 from dataclasses import dataclass
-from typing import Any, Tuple, Callable, Dict, Iterable, Set, Union, NewType
+from typing import Any, Callable, Iterable, NewType
 from enum import IntEnum, Enum
 import inspect
 import re
@@ -51,19 +51,16 @@ from pathlib import Path
 import FreeCAD as App  # type: ignore
 from FreeCAD import Document  # type: ignore
 from FreeCAD import DocumentObject  # type: ignore
-
-# from FreeCAD import ParameterGrp  # type: ignore  !!! Not present in FreeCAD 1.0
-from FreeCADGui import ViewProviderDocumentObject  # type: ignore
-from PySide.QtGui import QMenu, QMessageBox  # type: ignore
 from Part import Shape  # type: ignore
 
 ##: Conditional imports
 ##: ─────────────────────────────────────────────────────────────────────────────
 
 if App.GuiUp:
-    from pivy import coin  # type: ignore
     import FreeCADGui as Gui  # type: ignore
     from PySide import QtGui, QtCore  # type: ignore
+    from FreeCADGui import ViewProviderDocumentObject  # type: ignore
+    from PySide.QtGui import QMenu, QMessageBox  # type: ignore
 
 ##: Logging
 ##: ─────────────────────────────────────────────────────────────────────────────
@@ -80,9 +77,8 @@ def print_err(*args):
 
 
 ##: FreeCAD defined c++ types (Just for the sake of documentation)
-##: fake type hints compatible with python 3.8+
 ##: ─────────────────────────────────────────────────────────────────────────────
-ObjectRef = Union[DocumentObject, ViewProviderDocumentObject]
+ObjectRef = DocumentObject | ViewProviderDocumentObject
 
 
 ##: User defined python Types (Just for the sake of documentation)
@@ -90,7 +86,7 @@ ObjectRef = Union[DocumentObject, ViewProviderDocumentObject]
 ##: ─────────────────────────────────────────────────────────────────────────────
 DataProxy = NewType("DataProxy", object)  # Python proxy of DocumentObject
 ViewProxy = NewType("ViewProxy", object)  # Python proxy of ViewObject
-Proxy = NewType("Proxy", object)
+Proxy = DataProxy | ViewProxy
 
 
 ##: Defined symbols
@@ -256,7 +252,7 @@ _FC_PROPERTY_TYPES = (
 
 ##: Global private static registries
 ##: ─────────────────────────────────────────────────────────────────────────────
-_extensions: Dict[str, ExtensionSupport] = dict()
+_extensions: dict[str, ExtensionSupport] = dict()
 
 
 # ┌────────────────────────────────────────────────────────────────────────────┐
@@ -267,8 +263,7 @@ _extensions: Dict[str, ExtensionSupport] = dict()
 # ──────────────────────────────────────────────────────────────────────────────
 def _call(obj, name: str, *args, **kwargs):
     """Call a method on obj if exists"""
-    func = getattr(obj, name, None)
-    if func:
+    if func := getattr(obj, name, None):
         return func(*args, **kwargs)
 
 
@@ -277,10 +272,11 @@ def _snake_to_camel(text: str) -> str:
     """Transform text from snake naming to camel case"""
     if text:
         return "".join(token.capitalize() for token in text.split("_"))
+    return text
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-def _resolve_uri(path: str, base_dir: Path = None) -> str:
+def _resolve_uri(path: str, base_dir: Path | None = None) -> str:
     '''Resolve relative paths if prefixed with "self:"'''
     if str(path).startswith("self:") and base_dir:
         rel_path_elements = path[5:].lstrip(" /").split("/")
@@ -300,7 +296,7 @@ def _prop_constructor(prop_type: str):
         description: str = "",
         mode: PropertyMode = PropertyMode.Default,
         observer_func: Callable = None,
-        link_property: Union[str, bool] = False,
+        link_property: str | bool = False,
     ):
         return Property(
             type=prop_type,
@@ -327,13 +323,13 @@ def _is(types: Any) -> Callable:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-def _get_properties(cls) -> Iterable[Tuple[str, Property]]:
+def _get_properties(cls) -> Iterable[tuple[str, Property]]:
     """Returns the list of Properties defined in a proxy class"""
     return inspect.getmembers(cls, _is(Property))
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-def _get_display_modes(cls) -> Iterable[Tuple[str, DisplayMode]]:
+def _get_display_modes(cls) -> Iterable[tuple[str, DisplayMode]]:
     """Returns the list of Display Modes defined in a proxy class"""
     return inspect.getmembers(cls, _is(DisplayMode))
 
@@ -463,7 +459,7 @@ class Property:
     observer_func: Callable  # Change listener
     observer_arity: int  # Change listener arity
     name: str  # Actual name of the property
-    link_property: Union[str, bool]  # Name of the Link Property to configure
+    link_property: str | bool  # Name of the Link Property to configure
     section: str  # Capitalized single word due to FC limitations
     default: Any  # Initial value
     description: str  # GUI description
@@ -479,7 +475,7 @@ class Property:
         section: str = "Data",
         observer_func: Callable = None,
         name: str = None,
-        link_property: Union[str, bool] = False,
+        link_property: str | bool = False,
         default: Any = None,
         description: str = "",
         mode: PropertyMode = PropertyMode.Default,
@@ -614,7 +610,7 @@ class _Template:
     override_error_msg: str  # Message to suggest alternative names
 
     # ──────────
-    def __call__(self, meta: "TypeMeta") -> None:
+    def __call__(self, meta: TypeMeta) -> None:
         """Apply the template"""
         self.add(meta, self.name, self.allow_override)
         if self.aliases:
@@ -622,14 +618,14 @@ class _Template:
                 self.add(meta, name, True)
 
     # ──────────
-    def add(self, meta: "TypeMeta", name: str, allow_override: bool):
+    def add(self, meta: TypeMeta, name: str, allow_override: bool):
         """Build the method and inject with the name"""
         overridden = getattr(meta.cls, name, None)
         if overridden and not allow_override:
             msg = self.override_error_msg or ""
             raise NameError(f"Attribute {name} is already defined. {msg}")
-        attr = self.builder(overridden, meta)
-        if attr:
+
+        if attr := self.builder(overridden, meta):
             if hasattr(attr, "__name__"):
                 attr.__name__ = name
             setattr(meta.cls, name, attr)
@@ -654,42 +650,42 @@ class ExtensionSupport:
         _extensions[name] = self
 
     # ──────────
-    def on_create(self, proxy: Proxy, obj: ObjectRef, meta: "TypeMeta"):
+    def on_create(self, proxy: Proxy, obj: ObjectRef, meta: TypeMeta):
         """Extension listener for on_create event"""
         pass
 
     # ──────────
-    def on_restore(self, proxy: Proxy, obj: ObjectRef, meta: "TypeMeta"):
+    def on_restore(self, proxy: Proxy, obj: ObjectRef, meta: TypeMeta):
         """Extension listener for on_restore event"""
         pass
 
     # ──────────
-    def on_attach(self, proxy: Proxy, obj: ObjectRef, meta: "TypeMeta"):
+    def on_attach(self, proxy: Proxy, obj: ObjectRef, meta: TypeMeta):
         """Extension listener for on_attach event"""
         self.add_extension(proxy, obj)
 
     # ──────────
-    def on_start(self, proxy: Proxy, obj: ObjectRef, meta: "TypeMeta"):
+    def on_start(self, proxy: Proxy, obj: ObjectRef, meta: TypeMeta):
         """Extension listener for on_start event"""
         self.add_extension(proxy, obj)
 
     # ──────────
-    def on_execute(self, proxy: Proxy, obj: ObjectRef, meta: "TypeMeta"):
+    def on_execute(self, proxy: Proxy, obj: ObjectRef, meta: TypeMeta):
         """Extension listener for on_execute event"""
         pass
 
     # ──────────
-    def on_add(self, proxy: Proxy, obj: ObjectRef, meta: "TypeMeta"):
+    def on_add(self, proxy: Proxy, obj: ObjectRef, meta: TypeMeta):
         """Extension listener for on_add event"""
         pass
 
     # ──────────
-    def on_change(self, proxy: Proxy, obj: ObjectRef, meta: "TypeMeta", prop: str):
+    def on_change(self, proxy: Proxy, obj: ObjectRef, meta: TypeMeta, prop: str):
         """Extension listener for on_change event"""
         pass
 
     # ──────────
-    def on_class(self, meta: "TypeMeta"):
+    def on_class(self, meta: TypeMeta):
         """Extension listener for on_class event"""
         pass
 
@@ -718,7 +714,7 @@ class Part_AttachExtensionPython(ExtensionSupport):
     """Extension manager of: Part::AttachExtensionPython"""
 
     # ──────────
-    def on_execute(self, proxy: DataProxy, obj: DocumentObject, meta: "TypeMeta"):
+    def on_execute(self, proxy: DataProxy, obj: DocumentObject, meta: TypeMeta):
         obj.positionBySupport()
 
 
@@ -727,17 +723,17 @@ class App_LinkBaseExtensionPython(ExtensionSupport):
     """Extension manager of App::LinkBaseExtensionPython"""
 
     # ──────────
-    def on_class(self, meta: "TypeMeta"):
+    def on_class(self, meta: TypeMeta):
         meta.view_provider_name_override = "Gui::ViewProviderLinkPython"
 
     # ──────────
-    def resolve_link_prop(self, link_property: Union[str, bool], source: str) -> str:
+    def resolve_link_prop(self, link_property: str | bool, source: str) -> str:
         if isinstance(link_property, bool) and link_property:
             return source
         return link_property
 
     # ──────────
-    def on_start(self, proxy: DataProxy, obj: DocumentObject, meta: "TypeMeta"):
+    def on_start(self, proxy: DataProxy, obj: DocumentObject, meta: TypeMeta):
         super().on_start(proxy, obj, meta)
         mapping = {
             self.resolve_link_prop(prop.link_property, prop.name): prop.name
@@ -764,11 +760,11 @@ class TypeMeta:
     """
 
     cls: any  # proxy enhanced class
-    properties: Dict[str, Property]  # map binding to property
-    property_lookup: Dict[str, Property]  # map name to property
-    display_modes: Dict[str, DisplayMode]  # display mode builders
-    view_proxy: ViewProxy  # associated ViewProxy
-    extensions: Set[ExtensionSupport]  # Added extensions
+    properties: dict[str, Property]  # map binding to property
+    property_lookup: dict[str, Property]  # map name to property
+    display_modes: dict[str, DisplayMode]  # display mode builders
+    view_proxy: type[ViewProxy]  # associated ViewProxy
+    extensions: set[ExtensionSupport]  # Added extensions
     version: int  # Proxy versions for migrations support
     object_type: str  # Type of DocumentObject
     subtype: str  # Subtype of Proxy
@@ -909,6 +905,8 @@ class TypeMeta:
 
     # ──────────
     def init_display_modes(self, proxy: ViewProxy, obj: ViewProviderDocumentObject):
+        from pivy import coin  # type: ignore !! Lazy Load !!
+
         if len(self.display_modes) > 0:
             for dm in self.display_modes.values():
                 dm_obj = None
@@ -1204,8 +1202,7 @@ def t_proxy_constructor(overridden: Any, meta: TypeMeta):
 ##$ ─────────────────────────────────────────────────────────────────────────────
 @template(name="unsetupObject", override_error_msg=f"Use {_ON_REMOVE} instead.")
 def t_proxy_remove(overridden: Any, meta: TypeMeta):
-    call = getattr(meta.cls, _ON_REMOVE, None)
-    if call:
+    if call := getattr(meta.cls, _ON_REMOVE, None):
 
         def handler(self, fp: DocumentObject):
             return call(self, fp)
@@ -1282,11 +1279,12 @@ def t_proxy_attach(overridden: Any, meta: TypeMeta):
 @template(name="create")
 def t_proxy_create(overridden: Any, meta: TypeMeta):
     def create(
-        name: Union[str, None] = None,
-        label: Union[str, None] = None,
-        doc: Union[Document, None] = None,
+        name: str | None = None,
+        label: str | None = None,
+        doc: Document | None = None,
     ):
         """Create the FreeCAD Objects, the Python Proxies and bind them"""
+        _doc = doc or App.activeDocument() or App.newDocument()
         _name = name or meta.subtype
         proxy = meta.cls()
 
@@ -1294,7 +1292,6 @@ def t_proxy_create(overridden: Any, meta: TypeMeta):
         if meta.view_proxy and App.GuiUp:
             view_proxy = meta.view_proxy(None)
 
-        _doc = doc or App.activeDocument() or App.newDocument()
         fp = _doc.addObject(meta.object_type, _name, proxy, view_proxy, True)
 
         if hasattr(fp, "ViewObject") and hasattr(fp.ViewObject, "Proxy"):
@@ -1450,7 +1447,7 @@ def t_proxy_set_prop_status(overridden: Any, meta: TypeMeta):
     override_error_msg=f"Use {_ON_SERIALIZE} instead",
 )
 def t_dumps(overridden: Any, meta: TypeMeta):
-    def handler(self) -> Dict[str, Any]:
+    def handler(self) -> dict[str, Any]:
         state = dict()
         if hasattr(self, "Type"):
             state["_Type"] = self.Type
@@ -1467,9 +1464,8 @@ def t_dumps(overridden: Any, meta: TypeMeta):
     override_error_msg=f"Use {_ON_DESERIALIZE} instead",
 )
 def t_loads(overridden: Any, meta: TypeMeta):
-    def handler(self, state: Dict[str, Any]):
-        _type = state.get("_Type", None)
-        if _type:
+    def handler(self, state: dict[str, Any]):
+        if _type := state.get("_Type", None):
             self.Type = _type
         _call(self, _ON_DESERIALIZE, state)
 
@@ -1479,8 +1475,7 @@ def t_loads(overridden: Any, meta: TypeMeta):
 ##$ ─────────────────────────────────────────────────────────────────────────────
 @template(name="mustExecute", override_error_msg=f"Use {_IS_DIRTY} instead")
 def t_proxy_dirty(overridden: Any, meta: TypeMeta):
-    get = getattr(meta.cls, _IS_DIRTY, None)
-    if get:
+    if get := getattr(meta.cls, _IS_DIRTY, None):
 
         def handler(self, fp: DocumentObject):
             return get(self, fp)
@@ -1536,7 +1531,7 @@ def t_view_proxy_constructor(overridden: Any, meta: TypeMeta):
         if vp:
             vp.Proxy = self
         if overridden:
-            if object.__init__ == overridden:
+            if object.__init__ is overridden:
                 overridden(self)
             else:
                 overridden(self, vp, *args, **kwargs)
@@ -1551,7 +1546,7 @@ def t_view_proxy_constructor(overridden: Any, meta: TypeMeta):
 @template(name="attach", override_error_msg=f"Use {_ON_ATTACH} instead")
 def t_view_proxy_attach(overridden: Any, meta: TypeMeta):
     def handler(self, vp):
-        assert vp.Proxy == self
+        assert vp.Proxy is self
         self.__so_ref__ = vp
         self.__so_old__ = dict()
         _call(self, _ON_ATTACH, vp)
@@ -1569,8 +1564,7 @@ def t_view_proxy_attach(overridden: Any, meta: TypeMeta):
     override_error_msg=f"Use {_ON_CONTEXT_MENU} instead",
 )
 def t_view_proxy_ctx_menu(overridden: Any, meta: TypeMeta):
-    call = getattr(meta.cls, _ON_CONTEXT_MENU, None)
-    if call:
+    if call := getattr(meta.cls, _ON_CONTEXT_MENU, None):
 
         def handler(self, vp: ViewProviderDocumentObject, menu: QMenu):
             call(self, vp, menu)
@@ -1581,8 +1575,7 @@ def t_view_proxy_ctx_menu(overridden: Any, meta: TypeMeta):
 ##$ ─────────────────────────────────────────────────────────────────────────────
 @template(name="claimChildren", override_error_msg=f"Use {_ON_CLAIM_CHILDREN} instead")
 def t_view_proxy_claim_children(overridden: Any, meta: TypeMeta):
-    call = getattr(meta.cls, _ON_CLAIM_CHILDREN, None)
-    if call:
+    if call := getattr(meta.cls, _ON_CLAIM_CHILDREN, None):
 
         def handler(self):
             return call(self) or []
@@ -1593,8 +1586,7 @@ def t_view_proxy_claim_children(overridden: Any, meta: TypeMeta):
 ##$ ─────────────────────────────────────────────────────────────────────────────
 @template(name="setEdit", override_error_msg=f"Use {_ON_EDIT_START} instead")
 def t_view_proxy_edit_start(overridden: Any, meta: TypeMeta):
-    call = getattr(meta.cls, _ON_EDIT_START, None)
-    if call:
+    if call := getattr(meta.cls, _ON_EDIT_START, None):
 
         def handler(self, vp: ViewProviderDocumentObject, mode: int = 0):
             return call(self, vp, mode)
@@ -1605,8 +1597,7 @@ def t_view_proxy_edit_start(overridden: Any, meta: TypeMeta):
 ##$ ─────────────────────────────────────────────────────────────────────────────
 @template(name="unsetEdit", override_error_msg=f"Use {_ON_EDIT_END} instead")
 def t_view_proxy_edit_end(overridden: Any, meta: TypeMeta):
-    call = getattr(meta.cls, _ON_EDIT_END, None)
-    if call:
+    if call := getattr(meta.cls, _ON_EDIT_END, None):
 
         def handler(self, vp: ViewProviderDocumentObject, mode: int = 0):
             return call(self, vp, mode)
@@ -1617,8 +1608,7 @@ def t_view_proxy_edit_end(overridden: Any, meta: TypeMeta):
 ##$ ─────────────────────────────────────────────────────────────────────────────
 @template(name="onDelete", override_error_msg=f"Use {_ON_DELETE} instead")
 def t_view_proxy_delete(overridden: Any, meta: TypeMeta):
-    call = getattr(meta.cls, _ON_DELETE, None)
-    if call:
+    if call := getattr(meta.cls, _ON_DELETE, None):
 
         def handler(self, vp: ViewProviderDocumentObject, sub_elements):
             return call(self, vp, sub_elements)
@@ -1629,8 +1619,7 @@ def t_view_proxy_delete(overridden: Any, meta: TypeMeta):
 ##$ ─────────────────────────────────────────────────────────────────────────────
 @template(name="doubleClicked", override_error_msg=f"Use {_ON_DBL_CLICK} instead")
 def t_view_proxy_dbl_click(overridden: Any, meta: TypeMeta):
-    call = getattr(meta.cls, _ON_DBL_CLICK, None)
-    if call:
+    if call := getattr(meta.cls, _ON_DBL_CLICK, None):
 
         def handler(self, vp: ViewProviderDocumentObject):
             return call(self, vp)
@@ -1688,8 +1677,7 @@ def t_view_proxy_set_dm(overridden: Any, meta: TypeMeta):
 ##$ ─────────────────────────────────────────────────────────────────────────────
 @template(name="getDisplayModes", override_error_msg=f"Use {_DISPLAY_MODES} instead")
 def t_view_proxy_get_dms(overridden: Any, meta: TypeMeta):
-    meta_dm = getattr(meta.cls, _DISPLAY_MODES, None)
-    if meta_dm:
+    if meta_dm := getattr(meta.cls, _DISPLAY_MODES, None):
 
         def handler(self, vp: ViewProviderDocumentObject):
             return meta_dm(self, vp)
@@ -1708,8 +1696,7 @@ def t_view_proxy_get_dms(overridden: Any, meta: TypeMeta):
     override_error_msg=f"Use {_DEFAULT_DISPLAY_MODE} instead",
 )
 def t_view_proxy_get_def_dm(overridden: Any, meta: TypeMeta):
-    user = getattr(meta.cls, _DEFAULT_DISPLAY_MODE, None)
-    if user:
+    if user := getattr(meta.cls, _DEFAULT_DISPLAY_MODE, None):
 
         def handler(self):
             return user(self)
@@ -1740,8 +1727,7 @@ def t_view_proxy_get_def_dm(overridden: Any, meta: TypeMeta):
 ##$ ─────────────────────────────────────────────────────────────────────────────
 @template(name="updateData", override_error_msg=f"Use {_ON_OBJECT_CHANGE} instead")
 def t_view_proxy_object_change(overridden: Any, meta: TypeMeta):
-    call = getattr(meta.cls, _ON_OBJECT_CHANGE, None)
-    if call:
+    if call := getattr(meta.cls, _ON_OBJECT_CHANGE, None):
 
         def handler(self, obj: DocumentObject, prop_name: str):
             return call(self, obj, prop_name)
@@ -1813,7 +1799,7 @@ def t_migrations_onDocumentRestored(overridden, meta: MigrationMeta):
     if proxy_meta:
         current_version = proxy_meta.version
 
-    def handler(self, fp: DataProxy):
+    def handler(self, fp: DocumentObject):
         self.__so_state__ = FeatureState.Restoring
         self.__so_ref__ = fp
         version = getattr(fp, _SO_VERSION, 1)
@@ -2087,7 +2073,7 @@ def set_immutable_prop(obj: ObjectRef, name: str, value: Any) -> None:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-def get_selection(*args) -> Tuple:
+def get_selection(*args) -> tuple:
     """
     Returns current selection in specific order and matching specific types.
 

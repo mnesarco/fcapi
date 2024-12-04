@@ -4,77 +4,77 @@
 			"path": "fpo.py",
 			"bookmarks": [
 				{
-					"line": 289,
+					"line": 285,
 					"column": 0,
 					"label": "Conventions"
 				},
 				{
-					"line": 302,
+					"line": 298,
 					"column": 0,
 					"label": "Imports"
 				},
 				{
-					"line": 362,
+					"line": 358,
 					"column": 0,
 					"label": "Symbol constants"
 				},
 				{
-					"line": 405,
+					"line": 401,
 					"column": 0,
 					"label": "Supported property types"
 				},
 				{
-					"line": 446,
+					"line": 442,
 					"column": 0,
 					"label": "Utility functions"
 				},
 				{
-					"line": 604,
+					"line": 600,
 					"column": 0,
 					"label": "Property"
 				},
 				{
-					"line": 718,
+					"line": 714,
 					"column": 0,
 					"label": "Display Mode"
 				},
 				{
-					"line": 912,
+					"line": 910,
 					"column": 0,
 					"label": "Type Meta"
 				},
 				{
-					"line": 1069,
+					"line": 1067,
 					"column": 0,
 					"label": "Preference"
 				},
 				{
-					"line": 1189,
+					"line": 1187,
 					"column": 0,
 					"label": "proxy decorator"
 				},
 				{
-					"line": 1241,
+					"line": 1238,
 					"column": 0,
 					"label": "view_proxy decorator"
 				},
 				{
-					"line": 1325,
+					"line": 1322,
 					"column": 0,
 					"label": "DataProxy Templates"
 				},
 				{
-					"line": 1646,
+					"line": 1635,
 					"column": 0,
 					"label": "ViewProxy templates"
 				},
 				{
-					"line": 1884,
+					"line": 1870,
 					"column": 0,
 					"label": "Migrations"
 				},
 				{
-					"line": 2013,
+					"line": 1999,
 					"column": 0,
 					"label": "Module init"
 				}
