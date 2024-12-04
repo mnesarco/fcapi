@@ -2,10 +2,10 @@
 author: "Frank David Martínez Muñoz"
 copyright: "(c) 2024 Frank David Martínez Muñoz."
 license: "LGPL 2.1"
-version: "1.0.0-beta2"
-min_python: "3.8"
-min_freecad: "0.21"
-date: "2024-11-24 14:37:59.099392"
+version: "1.0.0-beta4"
+min_python: "3.10"
+min_freecad: "0.22"
+date: "2024-12-04 16:48:18.649528"
 geometry: "margin=2cm"
 ---
 
@@ -14,13 +14,13 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-11-24 14:37:59.106580                        |
+| __generated__     | 2024-12-04 16:48:18.657274                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
-| __version__       | 1.0.0-beta2                                       |
-| __min_python__    | 3.8                                               |
-| __min_freecad__   | 0.21                                              |
+| __version__       | 1.0.0-beta4                                       |
+| __min_python__    | 3.10                                              |
+| __min_freecad__   | 0.22                                              |
 
 
 
@@ -1417,7 +1417,7 @@ they are used in the examples.
 #### Signature / get_selection
 
 ```python
-def get_selection(*args) -> Tuple: ...
+def get_selection(*args) -> tuple: ...
 ```
 
 
