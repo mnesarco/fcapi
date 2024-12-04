@@ -22,9 +22,9 @@ from __future__ import annotations
 __author__ = "Frank David Martínez Muñoz"
 __copyright__ = "(c) 2024 Frank David Martínez Muñoz."
 __license__ = "LGPL 2.1"
-__version__ = "1.0.0-beta3"
-__min_python__ = "3.8"
-__min_freecad__ = "0.21"
+__version__ = "1.0.0-beta4"
+__min_python__ = "3.10"
+__min_freecad__ = "0.22"
 
 # Conventions for sections in this file:
 # See: vscode extension: aaron-bond.better-comments
