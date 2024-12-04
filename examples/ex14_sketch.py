@@ -39,4 +39,5 @@ class AlignedCircles:
         sketch.recompute()
 
 
-AlignedCircles.create(name="MyAlignedCircles")
+def create_sketch():
+    AlignedCircles.create(name="MyAlignedCircles")
