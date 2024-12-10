@@ -15,7 +15,10 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
+# ruff: noqa: D401, ERA001, N806, ANN201, D102, D101, D103
+
 from fpo import proxy, view_proxy
+
 
 # ViewProvider with GroupBehavior
 @view_proxy(icon="self:group.svg")

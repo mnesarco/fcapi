@@ -15,7 +15,10 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
+# ruff: noqa: D401, ERA001, N806, ANN201, D102, D101, D103
+
 import Part
+
 from fpo import PropertyLength, get_pd_active_body, print_err, proxy, set_pd_shape
 
 
@@ -30,13 +33,13 @@ class PDMyCubeAdd:
     height = PropertyLength(default=10)
 
     # Ensure execution by the first time
-    def on_create(self, obj):
-        self.on_execute(obj)
+    def on_create(self):
+        self.on_execute()
 
     # Update the shape
-    def on_execute(self, obj):
+    def on_execute(self):
         cube = Part.makeBox(self.length, self.width, self.height)
-        set_pd_shape(obj, cube)
+        set_pd_shape(self.Object, cube)
 
 
 # Use by just calling the create method from a macro or directly from the python
