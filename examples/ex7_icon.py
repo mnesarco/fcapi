@@ -15,7 +15,7 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
-from fpo import proxy, view_proxy, PropertyInteger
+from fpo import PropertyInteger, proxy, view_proxy
 
 
 # ViewProviders allows to control presentation things like the Icon of the

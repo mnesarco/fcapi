@@ -15,8 +15,13 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
-from fpo import proxy, view_proxy, DisplayMode
+# ruff: noqa: D401, ERA001, N806, ANN201, D102, D101, D103
+
+from FreeCADGui import ViewProviderDocumentObject
 from pivy import coin
+
+from fpo import DisplayMode, proxy, view_proxy
+
 
 # The ViewProxy is responsible for creating the display modes
 @view_proxy()
@@ -25,12 +30,12 @@ class CustomSceneObjectVP:
     cube = DisplayMode(name="Cube")
 
     @sphere.builder
-    def sphere_dm(self, vo):
+    def sphere_dm(self, _vo: ViewProviderDocumentObject) -> coin.SoSphere:
         self._sphere = coin.SoSphere()
         return self._sphere
 
     @cube.builder
-    def cube_dm(self, vo):
+    def cube_dm(self, _vo: ViewProviderDocumentObject) -> coin.SoCube:
         self._cube = coin.SoCube()
         return self._cube
 

@@ -15,13 +15,18 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
+# ruff: noqa: D401, ERA001
+
 from fpo import (
-    PropertyLink,
-    PropertyPlacement,
     PropertyBool,
     PropertyInteger,
+    PropertyLink,
+    PropertyPlacement,
+    events,
+    get_selection,
+    print_err,
     proxy,
-    get_selection)
+)
 
 
 # This class has the basic stuff to behave lik a Link Object
@@ -39,20 +44,20 @@ class CustomLinkArray:
 
     # Some obscure Link required thing
     @show_element.observer
-    def show_element_change(self, obj, value):
-        """required to support link array"""
-        if hasattr(obj, "PlacementList"):
+    def show_element_change(self, e: events.PropertyChangedEvent):
+        """Required to support link array."""
+        if hasattr(e.source, "PlacementList"):
             # this allows to move individual elements by the user
-            if value:
-                obj.setPropertyStatus("PlacementList", "-Immutable")
+            if e.new_value:
+                e.source.setPropertyStatus("PlacementList", "-Immutable")
             else:
-                obj.setPropertyStatus("PlacementList", "Immutable")
+                e.source.setPropertyStatus("PlacementList", "Immutable")
 
     # Prevent invalid element_count for the array case
     @element_count.observer
-    def element_count_change(self, obj, value):
-        """Number of elements in the array (including the original)"""
-        if value < 1:
+    def element_count_change(self, e: events.PropertyChangedEvent):
+        """Number of elements in the array (including the original)."""
+        if e.new_value < 1:
             self.element_count = 1
 
 
@@ -62,7 +67,7 @@ class CustomLinkArray:
 #  import ex5_link as ln
 #  ln.create_link()
 #
-def create_link(count: int = None):
+def create_link(count: int = 0):
     # Pick one object of any type from the current selection
     ok, obj = get_selection("*")
     if ok:
@@ -74,3 +79,6 @@ def create_link(count: int = None):
         if count:
             link.ElementCount = count
         return link
+
+    print_err("There are no objects selected.")
+    return None

@@ -15,10 +15,12 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
-from fpo import transaction
+# ruff: noqa: D401, ERA001, N806, ANN201, D102, D101, D103
 
 # Lets reuse one existing example to to demonstrate undo/redo transactions
 import ex2_cube as cube
+
+from fpo import transaction
 
 # Lets create one cube in one transaction
 with transaction("One Cube"):
@@ -38,7 +40,7 @@ with transaction("Three Cubes"):
 with transaction("Cancel something") as tx:
     for i in range(5):
         cube.create_cube(f"BadCube{i}")
-        if i == 3:
+        if i == 3:  # noqa: PLR2004
             tx.abort()
 
 # -----
@@ -47,5 +49,6 @@ with transaction("Cancel something") as tx:
 with transaction("Bad day"):
     for i in range(5):
         cube.create_cube(f"BadCube{i}")
-        if i == 3:
-            raise RuntimeError("Something goes wrong")
+        if i == 3:  # noqa: PLR2004
+            msg = "Something goes wrong"
+            raise RuntimeError(msg)

@@ -1,0 +1,9 @@
+[lint]
+select = ["ALL"]
+ignore = ["D212"]
+
+[lint.flake8-annotations]
+suppress-dummy-args = true
+
+[lint.pydocstyle]
+ignore-decorators = ["fpo.template", "contextlib.contextmanager"]

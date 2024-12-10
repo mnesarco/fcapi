@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
 #  License as published by the Free Software Foundation; either
@@ -17,12 +15,18 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
-from pathlib import Path
-import fcui as ui
+"""Basic working Examples for documentation."""
+
+# ruff: noqa: SIM117, D103, N802, ANN201, ANN202
+
 import importlib as imp
-import FreeCAD as App
-from PySide.QtCore import Qt, QRect
-from PySide.QtGui import QIcon, QWidget, QPainter
+from pathlib import Path
+
+import FreeCAD as App  # type: ignore[all]
+from PySide.QtCore import QRect, Qt
+from PySide.QtGui import QIcon, QPainter, QWidget
+
+import fcui as ui
 
 imp.reload(ui)
 
@@ -158,7 +162,7 @@ def demo_Html():
                 <p>
                 <strong>Be Happy!!</strong>
                 </p>
-                """
+                """,
             )
 #/codeblock
 
@@ -217,7 +221,7 @@ def demo_InputQuantity():
         )
 
         quantity2 = ui.InputQuantity(
-            value=5.0, label="Length Free:", unit="in", alignment=Qt.AlignCenter
+            value=5.0, label="Length Free:", unit="in", alignment=Qt.AlignCenter,
         )
 
         @ui.button("Print")
@@ -309,7 +313,7 @@ def demo_ImageView():
     with ui.Dialog("ImageView", size=(400, 300)):
         with ui.Col():
             ui.ImageView(
-                str(Path(__file__).parent / 'image.png')
+                str(Path(__file__).parent / "image.png"),
             )
 #/codeblock
 
@@ -319,7 +323,7 @@ def demo_SvgImageView():
     with ui.Dialog("SvgImageView"):
         with ui.Col():
             ui.SvgImageView(
-                str(Path(__file__).parent / 'vector.svg')
+                str(Path(__file__).parent / "vector.svg"),
             )
 #/codeblock
 
@@ -329,20 +333,20 @@ def demo_Table():
     with ui.Dialog("Table"):
         with ui.Col():
             ui.Table(
-                headers=('Length', '^Width', '>Height'),
+                headers=("Length", "^Width", ">Height"),
                 rows=[
                     [21, 34, 56],
                     [65, 87, 98],
                     [21, 32, 54],
                     [65, 76, 87],
-                ]
+                ],
             )
 #/codeblock
 
 #codeblock Canvas
 def demo_Canvas():
 
-    def render(widget: QWidget, qp: QPainter, ch: ui.CanvasHelper):
+    def render(_widget: QWidget, qp: QPainter, ch: ui.CanvasHelper):
         for i in range(10):
             with ch.pen(color=Qt.red, width=1):
                 qp.drawRect(QRect(i*10, i*10, 50, 50))
@@ -354,12 +358,12 @@ def demo_Canvas():
 
 #/codeblock
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if not App.activeDocument():
-        App.newDocument('fcapi gui demos')
-    with ui.Dialog('Demo', modal=False, size=(400, 600)):
+        App.newDocument("fcapi gui demos")
+    with ui.Dialog("Demo", modal=False, size=(400, 600)):
         with ui.Scroll(widgetResizable=True):
             with ui.Container():
-                demos = ((n, fn) for n, fn in dict(globals()).items() if n.startswith('demo_'))
+                demos = ((n, fn) for n, fn in dict(globals()).items() if n.startswith("demo_"))
                 for n, fn in sorted(demos, key=lambda x: x[0]):
                     ui.button(label=n[5:])(fn)

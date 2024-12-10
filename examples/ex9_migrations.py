@@ -15,11 +15,14 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
+# ruff: noqa: D401, ERA001, N806, ANN201, D102, D101, D103
+
 from fpo import (
     PropertyAngle,
     PropertyInteger,
     PropertyLength,
     PropertyLink,
+    events,
     migrations,
     print_err,
     print_log,
@@ -47,21 +50,21 @@ class MyDataVersioned:
     angle = PropertyAngle(default=30)
     source = PropertyLink()
 
-    def on_migrate_upgrade(self, version: int, fp):
+    def on_migrate_upgrade(self, e: events.MigrationEvent):
         print_log("your code runs here to upgrade from an older version")
-        print_log(f'"Old" object has version {version}')
+        print_log(f'"Old" object has version {e.from_version}')
         self.set_version(2)
 
-    def on_migrate_downgrade(self, version: int, fp):
+    def on_migrate_downgrade(self, e: events.MigrationEvent):
         print_log("your code runs here to downgrade from a newer version")
-        print_log(f"Object must be downgraded from version {version}")
+        print_log(f"Object must be downgraded from version {e.from_version}")
         self.set_version(1)
 
-    def on_migrate_complete(self, version: int, fp):
-        print_log("your code runs here")
+    def on_migrate_complete(self, e: events.MigrationEvent):
+        print_log("your code runs here after all migration is completed")
 
-    def on_migrate_error(self, version: int, fp):
-        print_err("your code runs here")
+    def on_migrate_error(self, e: events.MigrationEvent):
+        print_err("your code runs here if something goes wrong")
 
 
 # Use by just calling the create method from a macro or directly from the python

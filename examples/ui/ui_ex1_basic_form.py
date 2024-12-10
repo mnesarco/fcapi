@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
 #  License as published by the Free Software Foundation; either
@@ -18,7 +16,7 @@
 #
 
 """
-Code layout reflects Gui layout:
+Code layout reflects Gui layout.
 
 Dialog
   └── Col (Vertical Layout)
@@ -27,6 +25,8 @@ Dialog
       └── InputText
       └── button
 """
+
+# ruff: noqa: SIM117
 
 #codeblock
 import fcui as ui
@@ -38,7 +38,7 @@ with ui.Dialog("Basic Form") as form:
         var3 = ui.InputText(label="Some Text")
 
         @ui.button(label="Do something")
-        def something():
-            # Executed on click
+        def something() -> None:
+            """Execute on click."""
             ui.print_log(f"{var1.value()=}, {var2.value()=}, {var3.value()=}")
 #/codeblock

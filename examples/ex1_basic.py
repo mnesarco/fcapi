@@ -15,7 +15,7 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
-from fpo import proxy, PropertyInteger, PropertyLength, PropertyAngle, PropertyLink
+from fpo import PropertyAngle, PropertyInteger, PropertyLength, PropertyLink, proxy
 
 
 # The most basic `ScriptedObject` is one with a bunch of properties, it can be used
