@@ -15,8 +15,12 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
+# ruff: noqa: D401, ERA001, N806
+
 import FreeCAD as App
 import FreeCADGui as Gui
+from FreeCAD import Placement, Rotation, Vector
+
 from fpo import (
     PropertyAngle,
     PropertyBool,
@@ -24,12 +28,12 @@ from fpo import (
     PropertyLink,
     PropertyOptions,
     PropertyPlacement,
+    events,
     get_selection,
     message_box,
     proxy,
     set_immutable_prop,
 )
-from FreeCAD import Placement, Rotation, Vector
 
 
 # Options for links arrangement
@@ -59,24 +63,24 @@ class CustomCircularArray:
 
     # Some obscure Link required thing
     @show_element.observer
-    def show_element_change(self, obj, value):
-        """required to support link array"""
-        if hasattr(obj, "PlacementList"):
+    def show_element_change(self, e: events.PropertyChangedEvent):
+        """Required to support link array."""
+        if hasattr(e.source, "PlacementList"):
             # this allows to move individual elements by the user
-            if value:
-                obj.setPropertyStatus("PlacementList", "-Immutable")
+            if e.new_value:
+                e.source.setPropertyStatus("PlacementList", "-Immutable")
             else:
-                obj.setPropertyStatus("PlacementList", "Immutable")
+                e.source.setPropertyStatus("PlacementList", "Immutable")
 
     # Prevent invalid element_count for the array case
     @element_count.observer
-    def element_count_change(self, obj, value):
-        """Number of elements in the array (including the original)"""
-        if value < 1:
+    def element_count_change(self, e: events.PropertyChangedEvent):
+        """Number of elements in the array (including the original)."""
+        if e.new_value < 1:
             self.element_count = 1
 
     # Do the magic
-    def on_execute(self, obj):
+    def on_execute(self):
 
         # Validate inputs
         if not self.source_object or not self.axis:
@@ -101,7 +105,7 @@ class CustomCircularArray:
             placements.append(placement)
 
         # Update placements (Link api)
-        set_immutable_prop(obj, "PlacementList", placements)
+        set_immutable_prop(self.Object, "PlacementList", placements)
 
 
 
@@ -111,7 +115,7 @@ class CustomCircularArray:
 #  import ex6_link_array as ln
 #  ln.create_circular_array(6)
 #
-def create_circular_array(count: int = None):
+def create_circular_array(count: int = 0):
     # Get valid selection: an axis and an object
     # The supported Axis is a PartDesign datum line
     ok, selAxis, selObj = get_selection("PartDesign::Line", "*")
@@ -120,7 +124,7 @@ def create_circular_array(count: int = None):
     if not ok:
         msg = "Please select an object and an axis belonging to the same part"
         message_box(msg)
-        return
+        return None
 
     # check that object and axis belong to the same parent
     objParent = selObj.getParentGeoFeatureGroup()
@@ -128,7 +132,7 @@ def create_circular_array(count: int = None):
     if objParent != axisParent:
         msg = "Please select an object and an axis belonging to the same part"
         message_box(msg)
-        return
+        return None
 
     # Create the Link Array
     array = CustomCircularArray.create(selObj.Name + "_Array")

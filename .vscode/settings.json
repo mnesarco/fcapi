@@ -2,6 +2,7 @@
     "editor.rulers": [
         80, 100, 120
     ],
+    "cSpell.diagnosticLevel": "Hint",
     "cSpell.words": [
         "cleartext",
         "fcapi",
@@ -142,5 +143,15 @@
         "editor.wordBasedSuggestions": "off"
     },
     "ruff.lineLength": 100,
-    "ruff.nativeServer": true
+    "ruff.nativeServer": true,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/.venv": true,
+        "**/__pycache__": true
+    }
 }

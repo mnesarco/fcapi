@@ -15,9 +15,12 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
-import fpo
-import Part
+# ruff: noqa: D401, ERA001, N806, ANN201, D102, D101, D103
+
 import FreeCAD as App
+import Part
+
+import fpo
 
 # Custom Sketch object that autogenerates circles in a line
 
@@ -29,7 +32,8 @@ class AlignedCircles:
     spacing = fpo.PropertyFloat(default=20, description="Spacing between centers")
     diameter = fpo.PropertyFloat(default=10, description="Diameter of all circles")
 
-    def on_execute(self, sketch):
+    def on_execute(self):
+        sketch = self.Object
         sketch.deleteAllGeometry()
         radius = self.diameter / 2.0
         for i in range(self.count):

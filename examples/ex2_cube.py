@@ -15,8 +15,10 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
-from fpo import proxy, PropertyLength
 import Part
+
+from fpo import PropertyLength, proxy
+
 
 # The most basic `ScriptedObject` with a shape is a cube or box.
 # As we need a Shape, we will use Part::FeaturePython object type instead of
@@ -29,12 +31,12 @@ class MyCube:
     height = PropertyLength(default=10)
 
     # Ensure execution by the first time
-    def on_create(self, obj):
-        self.on_execute(obj)
+    def on_create(self):
+        self.on_execute()
 
     # Update the shape
-    def on_execute(self, obj):
-        obj.Shape = Part.makeBox(self.length, self.width, self.height)
+    def on_execute(self):
+        self.Object.Shape = Part.makeBox(self.length, self.width, self.height)
 
 
 # Use by just calling the create method from a macro or directly from the python

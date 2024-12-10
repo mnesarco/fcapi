@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-#
+#  noqa: INP001
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
 #  License as published by the Free Software Foundation; either
@@ -17,22 +16,35 @@
 #  (c) 2024 Frank David Martínez Muñoz.
 #
 
+# !!! ---------------------- !!!
 # !!! THIS IS NOT PUBLIC API !!!
+# !!! ---------------------- !!!
 
 """
-Compiles documentation-src.md into documentation.md
+Compiles documentation-src.md into documentation.md.
 
 Additional formats documentation.html and documentation.pdf are manually generated
 from documentation.md using typora.
 """
 
-import re
-import datetime
+# ruff: noqa: ANN401, ANN204, ANN201, ANN202
+# ruff: noqa: D103, D101, D107, D102, D105
+# ruff: noqa: N802, N806
+# ruff: noqa: C901
+# ruff: noqa: PLR0911
+# ruff: noqa: PTH123
+# ruff: noqa: RET504
+
+
+from __future__ import annotations
+
 import ast
-from textwrap import indent, dedent
-from typing import Dict, Any
-from pathlib import Path
+import datetime
+import re
 from configparser import ConfigParser
+from pathlib import Path
+from textwrap import dedent, indent
+from typing import Any
 
 # Embedded code blocks
 # ```
@@ -53,7 +65,7 @@ EXTERNAL_CODE_BLOCK = re.compile(
 )
 
 # Patter to include external code
-# file_name[block_name][indent]
+# file_name[block_name][indent]  # noqa: ERA001
 INCLUDE_CODE = re.compile(r"(.*?)(\[(.*?)\])?(\[(.*?)\])?")
 
 # Markdown headers
@@ -113,7 +125,7 @@ OPTIONS = {v.name: v for v in globals().values() if isinstance(v, BuildOption)}
 # Parsed function info
 # ──────────────────────────────────────────────────────────────────────────────
 class Function:
-    def __init__(self, name: str, node: ast.FunctionDef, cls_doc: str = None):
+    def __init__(self, name: str, node: ast.FunctionDef, cls_doc: str | None = None):
         self.name = name
         self.doc = ast.get_docstring(node) or cls_doc or ""
         self.sig = ast.unparse(node.args)
@@ -121,7 +133,7 @@ class Function:
         # Hide self argument
         args = re.sub(r"^(self|cls)(\s*,\s*)?", "", self.sig)
         # Format one argument per line
-        if len(args) + len(ret) > 70:
+        if len(args) + len(ret) > 70:  # noqa: PLR2004
             args = re.sub(r"(\w+\s*[:]|\*+)", r"\n        \1", args) + "\n    "
         self.decl = f"def {self.name}({args}){ret}: ..."
 
@@ -146,19 +158,19 @@ def generate_toc(content: str) -> str:
 
 # Markdown table generator
 # ──────────────────────────────────────────────────────────────────────────────
-def md_table(*cols):
-    header = " " + "| ".join((c[0].ljust(c[1]) for c in cols))
-    sep = "|".join(("-" * (c[1] + 1) for c in cols))
+def md_table(*cols: tuple):
+    header = " " + "| ".join(c[0].ljust(c[1]) for c in cols)
+    sep = "|".join("-" * (c[1] + 1) for c in cols)
     data = []
 
     def table() -> str:
         if len(data) == 0:
             return ""
         rows = (header, sep, *data)
-        return "\n" + "\n".join((f"|{row}|" for row in rows))
+        return "\n" + "\n".join(f"|{row}|" for row in rows)
 
-    def add(*row):
-        data.append(" " + "| ".join((row[c].ljust(cols[c][1]) for c in range(len(cols)))))
+    def add(*row: tuple):
+        data.append(" " + "| ".join(row[c].ljust(cols[c][1]) for c in range(len(cols))))
 
     table.add = add
     return table
@@ -166,11 +178,11 @@ def md_table(*cols):
 
 # Get meta
 # ──────────────────────────────────────────────────────────────────────────────
-def get_meta(source: ast.Module) -> Dict[str, Any]:
-    tags = dict()
+def get_meta(source: ast.Module) -> dict[str, Any]:
+    tags = {}
 
     class NT(ast.NodeTransformer):
-        def visit_Assign(self, node):
+        def visit_Assign(self, node: ast.Assign) -> ast.Assign:
             if isinstance(node.targets[0], ast.Name):
                 var_name = node.targets[0].id
                 if (
@@ -190,7 +202,7 @@ def get_meta(source: ast.Module) -> Dict[str, Any]:
 def generate_meta(source: ast.Module):
     meta = get_meta(source)
     table = md_table(("META", 18), ("VALUE", 50))
-    table.add("__generated__", str(datetime.datetime.now()))
+    table.add("__generated__", str(datetime.datetime.now()))  # noqa: DTZ005
     for row in meta.items():
         table.add(*row)
     return table()
@@ -202,8 +214,8 @@ def generate_preamble(source: ast.Module):
     meta = get_meta(source)
     content = ["---"]
     for name, value in meta.items():
-        content.append(f'{name.replace("__", "")}: "{str(value)}"'.replace("\n", ""))
-    content.append(f'date: "{datetime.datetime.now()}"')
+        content.append(f'{name.replace("__", "")}: "{value!s}"'.replace("\n", ""))
+    content.append(f'date: "{datetime.datetime.now()}"')  # noqa: DTZ005
     content.append('geometry: "margin=2cm"')
     content.append("---")
     return "\n".join(content)
@@ -214,7 +226,7 @@ def generate_preamble(source: ast.Module):
 def interpolate_macros(content: str, source: ast.Module, base_dir: Path) -> str:
     functions = []
 
-    def interpolate(m: re.Match):
+    def interpolate(m: re.Match) -> str | None:
         kind, ident = m.groups()
         if kind == "doc":
             if ident == "TOC":
@@ -224,7 +236,7 @@ def interpolate_macros(content: str, source: ast.Module, base_dir: Path) -> str:
             if ident == "PRE":
                 return generate_preamble(source)
             if ident == "date":
-                return f"{datetime.datetime.now()}"
+                return f"{datetime.datetime.now()}"  # noqa: DTZ005
             if ident == "page-break":
                 return '<p style="page-break-after: always; break-after: page;"></p>\n'
         elif kind == "a":
@@ -239,29 +251,27 @@ def interpolate_macros(content: str, source: ast.Module, base_dir: Path) -> str:
             return widget_md(ident, functions[0], base_dir)
         elif kind == "code":
             return include_file_as_code(ident, base_dir)
+        return None
 
     return MACRO.sub(interpolate, content)
 
 
-_included_code_cache = dict()
+_included_code_cache = {}
 
 
 def include_file_as_code(ident: str, base_dir: Path) -> str:
     file_name, _, block_name, __, indent_n = INCLUDE_CODE.fullmatch(ident).groups()
-    if not indent_n:
-        indent_n = 0
-    else:
-        indent_n = int(indent_n)
+    indent_n = 0 if not indent_n else int(indent_n)
     cached = _included_code_cache.get((file_name, block_name), None)
     if cached:
         return cached
     src = base_dir / file_name
     if src.exists():
-        with open(src, "r") as f:
+        with open(src) as f:
             for _, code_block_name, code in EXTERNAL_CODE_BLOCK.findall(f.read()):
                 text = f"> *{file_name}* ({code_block_name})\n\n"
                 text += f"""\n```python\n{code}\n```\n"""
-                _included_code_cache[(file_name, code_block_name)] = indent(dedent(text), ' ' * indent_n)
+                _included_code_cache[(file_name, code_block_name)] = indent(dedent(text), " " * indent_n)  # noqa: E501
         cached = _included_code_cache.get((file_name, block_name), None)
         if not cached:
             return f"ERROR: BLOCK NOT FOUND: {block_name}"
@@ -272,20 +282,19 @@ def include_file_as_code(ident: str, base_dir: Path) -> str:
 # Remove comments, documentation is code, so there are comments that are not
 # expected to see in the generated doc.
 # ──────────────────────────────────────────────────────────────────────────────
-def remove_comments(content):
+def remove_comments(content: str) -> str:
     s = INTERNAL_BLOCK_COMMENTS.sub("", content)
-    s = INTERNAL_LINE_COMMENTS.sub("", s)
-    return s
+    return INTERNAL_LINE_COMMENTS.sub("", s)
 
 
 # Markdown does not support line-breaks inside tables, this allows to use
 # char + to mark a continuation.
 # ──────────────────────────────────────────────────────────────────────────────
-def fix_tables(content):
+def fix_tables(content: str) -> str:
     TABLE = re.compile(r"^:table(.*?):/table$", re.MULTILINE | re.DOTALL)
 
-    def fix(m):
-        return re.sub(r"(?<!\\)\+\s+", "", m.group(1), 0, re.MULTILINE)
+    def fix(m: re.Match):
+        return re.sub(r"(?<!\\)\+\s+", "", m.group(1), count=0, flags=re.MULTILINE)
 
     return TABLE.sub(fix, content)
 
@@ -318,19 +327,19 @@ def return_table(comment: str):
 
 # Generate markdown from a docstring
 # ──────────────────────────────────────────────────────────────────────────────
-def comment_md(doc, base_dir: Path):
+def comment_md(doc: str, base_dir: Path) -> str:
     doc = dedent(doc)
     args = params_table(doc)
     doc = DOC_PARAM.sub("", doc)
     ret = return_table(doc)
     doc = DOC_RETURN.sub("", doc)
     doc = interpolate_macros(doc, None, base_dir)
-    return "\n".join((ret, args, "\n", doc.strip())).rstrip()
+    return "\n".join((ret, args, "\n", doc.strip())).rstrip()  # noqa: FLY002
 
 
 # Generate a function reference documentation
 # ──────────────────────────────────────────────────────────────────────────────
-def widget_md(name: str, functions: Dict[str, Function], base_dir: Path):
+def widget_md(name: str, functions: dict[str, Function], base_dir: Path):
     block = f"""{function_md(name, functions, base_dir, opt_widget_h_level.value, "Widget")}
     """
     return block
@@ -345,7 +354,11 @@ def fn_image(name: str) -> str:
 # Generate a function reference documentation
 # ──────────────────────────────────────────────────────────────────────────────
 def function_md(
-    name: str, functions: Dict[str, Function], base_dir: Path, header_level=3, prefix="Function"
+    name: str,
+    functions: dict[str, Function],
+    base_dir: Path,
+    header_level: int = 3,
+    prefix: str = "Function",
 ):
     func = functions[name]
     name = re.sub(r"__(.*)", "\\__$1", name)
@@ -377,8 +390,8 @@ def clean_blank_lines(content: str) -> str:
 
 # Extract function information
 # ──────────────────────────────────────────────────────────────────────────────
-def parse_functions(source: ast.Module) -> Dict[str, Function]:
-    functions = dict()
+def parse_functions(source: ast.Module) -> dict[str, Function]:
+    functions = {}
 
     class NT(ast.NodeTransformer):
         def visit_FunctionDef(self, node: ast.FunctionDef):
@@ -399,7 +412,8 @@ def parse_functions(source: ast.Module) -> Dict[str, Function]:
 def parse_build_options(content: str):
     opts = BUILD_OPTIONS.findall(content)
     if len(opts) > 1:
-        raise RuntimeError("Only one build-options section is allowed")
+        msg = "Only one build-options section is allowed"
+        raise RuntimeError(msg)
     if len(opts) == 1:
         config = ConfigParser()
         config.read_string(opts[0])
@@ -415,10 +429,10 @@ def build(source_doc: str, module_name: str):
     _included_code_cache.clear()
     base = Path(Path(__file__).parent)
     doc_src_file = Path(base, f"{source_doc}-src.md")
-    with open(doc_src_file, "r") as file:
+    with open(doc_src_file) as file:
         content = file.read()
         content = parse_build_options(content)
-        with open(base.parent / f"{module_name}.py", "r") as mod_src:
+        with open(base.parent / f"{module_name}.py") as mod_src:
             source = ast.parse(mod_src.read(), type_comments=True)
         content = remove_comments(content)
         content = fix_tables(content)
