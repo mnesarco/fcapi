@@ -27,7 +27,8 @@
 - Added events namespace with all *Event types
 - Added DataProxy and ViewProxy protocols for documentation
 - Updated Property* constructors, generated from FreeCAD source Application.cpp
+- Improved typings
 
 ## fcui
 
--
+- Improved typings
