@@ -1,19 +1,5 @@
-#  This library is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU Lesser General Public
-#  License as published by the Free Software Foundation; either
-#  version 2.1 of the License, or (at your option) any later version.
-#
-#  This library is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public
-#  License along with this library; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-#
-#  (c) 2024 Frank David Martínez Muñoz.
-#
+# SPDX-License: LGPL-3.0-or-later
+# (c) 2024 Frank David Martínez Muñoz. <mnesarco at gmail.com>
 
 """Declarative Qt Gui Builders for FreeCAD."""
 
@@ -46,94 +32,166 @@ __min_freecad__ = "0.22"
 ##: [SECTION] Builtin Imports
 ##: ────────────────────────────────────────────────────────────────────────────
 
-import json  # noqa: I001
+import json
 import re
 import sys
 import threading
 from contextlib import contextmanager
-from functools import wraps
+from functools import wraps, update_wrapper
 from pathlib import Path
 from typing import (
     Any,
-    Callable,
     ClassVar,
     TypeAlias,
-    Union,
     TYPE_CHECKING,
 )
 
-if TYPE_CHECKING:
-    from collections.abc import Generator, Hashable, Iterable, Iterator
 
 ##: [SECTION] FreeCAD Imports
 ##: ────────────────────────────────────────────────────────────────────────────
 
-import FreeCAD as App  # type: ignore[all]  # noqa: I001
+import FreeCAD as App  # type: ignore[all]
 import FreeCADGui as Gui  # type: ignore[all]
 from FreeCAD import Base, DocumentObject  # type: ignore[all]
 
-##: [SECTION] Qt/PySide Imports
+##: [SECTION] Qt/PySide Imports (Development)
 ##: ────────────────────────────────────────────────────────────────────────────
+if TYPE_CHECKING:
+    from collections.abc import Callable, Generator, Hashable, Iterable, Iterator
+    from PySide6.QtCore import (
+        QMargins,
+        QObject,
+        QPoint,
+        QRect,
+        QSize,
+        Qt,
+        QTimer,
+        Signal,
+        Slot,
+        QEvent,
+    )
 
-from PySide.QtCore import (  # type: ignore[attr-defined]
-    QMargins,
-    QObject,
-    QPoint,
-    QRect,
-    Qt,
-    QTimer,
-    Signal,
-    Slot,
-)
+    from PySide6.QtGui import (
+        QAction,
+        QBrush,
+        QCloseEvent,
+        QColor,
+        QFontDatabase,
+        QIcon,
+        QMoveEvent,
+        QResizeEvent,
+        QPainter,
+        QPaintEvent,
+        QPen,
+        QPixmap,
+    )
 
-from PySide.QtGui import (  # type: ignore[attr-defined]
-    QAbstractItemView,
-    QApplication,
-    QBrush,
-    QCheckBox,
-    QCloseEvent,
-    QColor,
-    QComboBox,
-    QDialog,
-    QDoubleSpinBox,
-    QFileDialog,
-    QFontDatabase,
-    QFrame,
-    QGroupBox,
-    QHBoxLayout,
-    QIcon,
-    QLabel,
-    QLayout,
-    QLineEdit,
-    QMainWindow,
-    QMessageBox,
-    QPainter,
-    QPaintEvent,
-    QPen,
-    QPixmap,
-    QPlainTextEdit,
-    QPushButton,
-    QAbstractButton,
-    QScrollArea,
-    QSpinBox,
-    QSplitter,
-    QTableWidget,
-    QTableWidgetItem,
-    QTabWidget,
-    QToolButton,
-    QTreeWidget,
-    QTreeWidgetItem,
-    QVBoxLayout,
-    QWidget,
-)
+    from PySide6.QtWidgets import (
+        QAbstractItemView,
+        QApplication,
+        QCheckBox,
+        QComboBox,
+        QColorDialog,
+        QDialog,
+        QDoubleSpinBox,
+        QFileDialog,
+        QFrame,
+        QGroupBox,
+        QHBoxLayout,
+        QLabel,
+        QLayout,
+        QLineEdit,
+        QMainWindow,
+        QMessageBox,
+        QPlainTextEdit,
+        QPushButton,
+        QAbstractButton,
+        QScrollArea,
+        QSpinBox,
+        QSplitter,
+        QTableWidget,
+        QTableWidgetItem,
+        QTabWidget,
+        QToolButton,
+        QTreeWidget,
+        QTreeWidgetItem,
+        QVBoxLayout,
+        QWidget,
+        QSizePolicy,
+    )
 
-from PySide.QtSvg import QSvgRenderer  # type: ignore[attr-defined]
+    from PySide6.QtSvg import QSvgRenderer
+
+
+##: [SECTION] Qt/PySide Imports (FreeCAD runtime)
+##: ────────────────────────────────────────────────────────────────────────────
+if not TYPE_CHECKING:
+    from PySide.QtCore import (  # type: ignore[attr-defined]
+        QMargins,
+        QObject,
+        QPoint,
+        QRect,
+        QSize,
+        Qt,
+        QTimer,
+        Signal,
+        Slot,
+        QEvent,
+    )
+
+    from PySide.QtGui import (  # type: ignore[attr-defined]
+        QAction,  # noqa: F401
+        QAbstractItemView,
+        QApplication,
+        QBrush,
+        QCheckBox,
+        QCloseEvent,
+        QColor,
+        QComboBox,
+        QColorDialog,
+        QDialog,
+        QDoubleSpinBox,
+        QFileDialog,
+        QFontDatabase,
+        QFrame,
+        QGroupBox,
+        QHBoxLayout,
+        QIcon,
+        QLabel,
+        QLayout,
+        QLineEdit,
+        QMainWindow,
+        QMessageBox,
+        QMoveEvent,
+        QResizeEvent,
+        QPainter,
+        QPaintEvent,
+        QPen,
+        QPixmap,
+        QPlainTextEdit,
+        QPushButton,
+        QAbstractButton,
+        QScrollArea,
+        QSpinBox,
+        QSplitter,
+        QTableWidget,
+        QTableWidgetItem,
+        QTabWidget,
+        QToolButton,
+        QTreeWidget,
+        QTreeWidgetItem,
+        QVBoxLayout,
+        QWidget,
+        QSizePolicy,
+    )
+
+    from PySide.QtSvg import QSvgRenderer  # type: ignore[attr-defined]
 
 
 ##: [SECTION] Type Aliases
 ##: ────────────────────────────────────────────────────────────────────────────
 
-Numeric: TypeAlias = Union[int, float]
+Numeric: TypeAlias = int | float
 Vector: TypeAlias = Base.Vector
 KwArgs: TypeAlias = dict[str, Any]
 
@@ -241,8 +299,11 @@ def widget_with_label_row(
     layout.setContentsMargins(0, 0, 0, 0)
     if isinstance(label, QWidget):
         layout.addWidget(label)
+        widget._label = label  # noqa: SLF001
     elif label:
-        layout.addWidget(QLabel(str(label)))
+        label = LabelEx(str(label))
+        layout.addWidget(label)
+        widget._label = label  # noqa: SLF001
     layout.addWidget(widget, stretch, alignment)
     return row
 
@@ -256,6 +317,8 @@ class Color(QColor):
     Use like Color(code='#ff0000'), Color(code='#ff0000ff'), Color(code='#ff0000', alpha=0.5)
     """
 
+    RGBA_RE = re.compile(r"rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\)")
+
     def __init__(
         self,
         *args: tuple,
@@ -264,7 +327,7 @@ class Color(QColor):
         **kwargs: KwArgs,
     ) -> None:
         if code is not None:
-            if code.startswith("#"):
+            if code.startswith("#"):  # noqa: FURB188
                 code = code[1:]
             if len(code) < 8:  # noqa: PLR2004
                 code += "FFFFFFFF"
@@ -278,13 +341,22 @@ class Color(QColor):
         elif len(args) == 1 and isinstance(args[0], QColor):
             super().__init__()
             self.setRgba(args[0].rgba())
+        elif len(args) == 1 and (rgba := self.RGBA_RE.fullmatch(args[0])):
+            super().__init__(*(int(v) for v in rgba.groups()))
         else:
-            super().__init__(*args, **kwargs)
+            try:
+                super().__init__(*args, **kwargs)
+            except Exception:  # noqa: BLE001
+                super().__init__()
+
         if isinstance(alpha, float):
             self.setAlphaF(alpha)
 
     def __str__(self) -> str:
         return f"rgba({self.red()},{self.green()},{self.blue()},{self.alpha()})"
+
+    def rgb_and_alpha(self) -> tuple[str, int]:
+        return f"rgb({self.red()},{self.green()},{self.blue()})", self.alpha()
 
 
 ##% [Widget] ColorIcon
@@ -500,6 +572,9 @@ class _BuildContext:
     def dump(self) -> None:
         print_log(f"BuildContext: {self._stack}")
 
+    def is_empty(self) -> bool:
+        return not bool(self._stack)
+
 
 # ──────────────────────────────────────────────────────────────────────────────
 def build_context() -> _BuildContext:
@@ -566,6 +641,7 @@ class DialogWidget(QDialog):
     """Simple Dialog with onClose as signal."""
 
     onClose = Signal(QCloseEvent)
+    onLanguageChange = Signal()
 
     def __init__(self, *args: tuple, **kwargs: KwArgs) -> None:
         super().__init__(*args, **kwargs)
@@ -574,6 +650,11 @@ class DialogWidget(QDialog):
         """Forward closeEvent to onClose signal."""
         self.onClose.emit(event)
         super().closeEvent(event)
+
+    def changeEvent(self, event: QEvent) -> None:
+        if event.type() == QEvent.LanguageChange:
+            self.onLanguageChange.emit()
+        super().changeEvent(event)
 
 
 ##% [Widget] Dialog
@@ -608,7 +689,7 @@ def Dialog(
     w = DialogWidget(parent=parent)
 
     if title is not None:
-        w.setWindowTitle(title)
+        w.setWindowTitle(str(title))
     set_qt_attrs(w, **kwargs)
 
     build_context().reset()
@@ -619,7 +700,7 @@ def Dialog(
         else:
             w.adjustSize()
         if show:
-            Dialogs.open(w, modal)
+            Dialogs.open(w, modal=modal)
 
 
 ##% [Widget] Scroll
@@ -677,8 +758,27 @@ def GroupBox(
 
 ##% [Widget] Container
 ##% ────────────────────────────────────────────────────────────────────────────
+class ContainerWidget(QWidget):
+    """Custom container widget."""
+
+    onLanguageChange = Signal()
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+    def changeEvent(self, event: QEvent) -> None:
+        if event.type() == QEvent.LanguageChange:
+            self.onLanguageChange.emit()
+        super().changeEvent(event)
+
+
 @contextmanager
-def Container(*, add: bool = True, **kwargs: KwArgs) -> Generator[QFrame, Any, Any]:
+def Container(
+    *,
+    add: bool = True,
+    top: bool = False,
+    **kwargs: KwArgs,
+) -> Generator[QFrame, Any, Any]:
     """
     Simple container context/widget.
 
@@ -689,11 +789,18 @@ def Container(*, add: bool = True, **kwargs: KwArgs) -> Generator[QFrame, Any, A
     :param dict[str, Any] **kwargs: Qt properties
     :return QFrame: The container widget
     """
-    w = QWidget()
+    w = ContainerWidget()
     set_qt_attrs(w, **kwargs)
-    if add:
+
+    ctx = build_context()
+    top = top or ctx.is_empty()
+
+    if top:
+        ctx.reset()
+    elif add:
         place_widget(w)
-    with build_context().stack(w):
+
+    with ctx.stack(w):
         yield w
 
 
@@ -1039,6 +1146,7 @@ class InputTextWidget(QLineEdit):
 
     def __init__(self, *args: tuple, **kwargs: KwArgs) -> None:
         super().__init__(*args, **kwargs)
+        self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
 
     def value(self) -> str:
         """Return text content."""
@@ -1086,13 +1194,58 @@ def InputText(
     return widget
 
 
+##% [Widget Impl] LabelEx
+##% ────────────────────────────────────────────────────────────────────────────
+class LabelEx(QWidget):
+    """QLable with icon."""
+
+    ICON_SIZE = 16
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__()
+        self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
+        self.setLayout(QHBoxLayout(self))
+        self.setContentsMargins(0, 0, 0, 0)
+        self.layout().setContentsMargins(0, 0, 0, 0)
+        self.label = QLabel(*args, **kwargs)
+        self.icon = QLabel(self)
+        self.icon.setVisible(False)
+        self.icon.setMaximumWidth(LabelEx.ICON_SIZE)
+        self.layout().addWidget(self.icon)
+        self.layout().addWidget(self.label)
+
+    def setText(self, text: str) -> None:
+        self.label.setText(str(text))
+
+    def text(self) -> str:
+        return self.label.text()
+
+    def setNotification(self, icon: str | QIcon, text: str | None = None) -> None:
+        self.icon.setToolTip(text or "")
+        size = QSize(LabelEx.ICON_SIZE, LabelEx.ICON_SIZE)
+        if isinstance(icon, str):
+            icon = QIcon.fromTheme(icon)
+        self.icon.setPixmap(icon.pixmap(size))
+        self.icon.setVisible(True)
+
+    def clearNotification(self) -> None:
+        self.icon.setVisible(False)
+
+
 ##% [Widget Impl] InputQuantityWidget
 ##% ────────────────────────────────────────────────────────────────────────────
-class InputQuantityWidget:
+class InputQuantityWidget(QWidget):
     """Input quantity widget."""
 
     def __init__(self, editor: QWidget) -> None:
+        super().__init__()
+        self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
+        self.setLayout(QVBoxLayout(self))
+        self.setContentsMargins(0, 0, 0, 0)
+        self.layout().setContentsMargins(0, 0, 0, 0)
+        self.layout().addWidget(editor)
         self.editor = editor
+        editor.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
 
     def value(self) -> Any:
         return self.editor.property("rawValue")
@@ -1114,6 +1267,36 @@ class InputQuantityWidget:
 
     def setUnit(self, value: str) -> None:
         return self.editor.setProperty("unit", value)
+
+    def setToolTip(self, tip: str) -> None:
+        self.editor.setToolTip(tip)
+
+    def moveEvent(self, event: QMoveEvent) -> None:
+        super().moveEvent(event)
+        self.fixValidationIconSize()
+
+    def resizeEvent(self, event: QResizeEvent) -> None:
+        super().resizeEvent(event)
+        self.fixValidationIconSize()
+
+    def fixValidationIconSize(self) -> None:
+        # Fix nasty huge validation icon
+        if isinstance(icon := self.editor.findChild(QLabel), QLabel):
+            icon.setScaledContents(True)
+            size = self.frameSize()
+            h = size.height() - 8
+            left = size.width() - h - 4
+            icon.setStyleSheet(f"""QLabel {{
+                                   border: none;
+                                   padding: 0px;
+                                   max-width: {h}px;
+                                   max-height:{h}px;
+                                   min-width: {h}px;
+                                   min-height:{h}px;
+                                   }}
+                                   """)
+            icon.move(left, 4)
+            icon.update()
 
 
 ##% [Widget] InputQuantity
@@ -1172,7 +1355,7 @@ def InputQuantity(
     set_qt_attrs(editor, **kwargs)
 
     if name:
-        editor.setObjectName(name)
+        widget.setObjectName(name)
 
     if obj and property:
         ee = Gui.ExpressionBinding(editor)
@@ -1193,7 +1376,7 @@ def InputQuantity(
             widget.setValue(value)
 
     if add:
-        place_widget(editor, label=label, stretch=stretch, alignment=alignment)
+        place_widget(widget, label=label, stretch=stretch, alignment=alignment)
 
     return widget
 
@@ -1518,20 +1701,27 @@ class InputOptionsWidget(QComboBox):
 
     def __init__(self, data: dict[str, Hashable]) -> None:
         super().__init__()
-        self.index = {}
-        self.lookup = {}
-        for i, (label, value) in enumerate(data.items()):
-            self.index[i] = value
-            self.lookup[value] = i
-            self.addItem(label)
+        for label, value in data.items():
+            self.addItem(str(label), value)
+
+    def addOption(self, label: str, value: Hashable) -> None:
+        self.addItem(str(label), value)
+
+    def removeOption(self, value: Hashable) -> None:
+        index = self.findData(value)
+        if index == -1:
+            return
+        self.removeItem(index)
+
+    def values(self) -> Iterator[Hashable]:
+        for i in range(self.count()):
+            yield self.itemData(i)
 
     def value(self) -> Hashable:
-        return self.index.get(self.currentIndex(), None)
+        return self.currentData()
 
     def setValue(self, value: Hashable) -> None:
-        index = self.lookup.get(value, None)
-        if index is not None:
-            self.setCurrentIndex(index)
+        self.setCurrentIndex(self.findData(value))
 
 
 ##% [Widget] InputOptions
@@ -1544,6 +1734,7 @@ def InputOptions(
     name: str | None = None,
     stretch: int = 0,
     alignment: Qt.Alignment = DEFAULT_ALIGNMENT,
+    add: bool = True,
     **kwargs: KwArgs,
 ) -> InputOptionsWidget:
     """
@@ -1567,7 +1758,8 @@ def InputOptions(
         widget.setValue(value)
     if name:
         widget.setObjectName(name)
-    place_widget(widget, label=label, stretch=stretch, alignment=alignment)
+    if add:
+        place_widget(widget, label=label, stretch=stretch, alignment=alignment)
     return widget
 
 
@@ -1805,6 +1997,47 @@ def button(
     alignment: Qt.Alignment = DEFAULT_ALIGNMENT,
     add: bool = True,
     **kwargs: KwArgs,
+) -> Callable[[Callable[[], None]], QAbstractButton]:
+    """
+    Button Widget.
+
+    Example:
+    ~:code:../examples/ui/widgets.py[buttons]:~
+
+    :param str label: text of the button, defaults to None
+    :param bool tool: use tool style button, defaults to False
+    :param Union[QIcon, str] icon: icon, defaults to None
+    :param int stretch: layout stretch, defaults to 0
+    :param Qt.Alignment alignment: layout alignment, defaults to Qt.Alignment()
+    :param bool add: add to current context, defaults to True
+    :return QAbstractButton: The widget
+    """
+
+    def wrapper(handler: Callable[[], None]) -> QAbstractButton:
+        return Button(
+            label=label,
+            clicked=handler,
+            tool=tool,
+            icon=icon,
+            stretch=stretch,
+            alignment=alignment,
+            add=add,
+            **kwargs,
+        )
+
+    return wrapper
+
+
+def Button(
+    label: str | None = None,
+    *,
+    clicked: Callable[[], None] | None = None,
+    tool: bool = False,
+    icon: QIcon | str | None = None,
+    stretch: int = 0,
+    alignment: Qt.Alignment = DEFAULT_ALIGNMENT,
+    add: bool = True,
+    **kwargs: KwArgs,
 ) -> QAbstractButton:
     """
     Button Widget.
@@ -1836,11 +2069,8 @@ def button(
     if add:
         place_widget(btn, stretch=stretch, alignment=alignment)
 
-    def wrapper(handler: Callable) -> QAbstractButton:
-        btn.clicked.connect(handler)
-        return btn
-
-    return wrapper
+    btn.clicked.connect(clicked)
+    return btn
 
 
 ##% [Gui] ProgressIndicator
@@ -2413,8 +2643,173 @@ def Section(
                 yield Container(**kwargs)
 
 
+##% [Widget] InputColor
+##% ────────────────────────────────────────────────────────────────────────────
+class InputColorWidget(QPushButton):
+    """Widget for color selection."""
+
+    def __init__(self, *, value: Any = None, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.setValue(value or "rgba(0,0,0,255)")
+        self.dirty = True
+
+    def value(self) -> str:
+        return str(self._color)
+
+    def setValue(self, color: str | Color) -> None:
+        self._color = color if isinstance(color, Color) else Color(color)
+        self.dirty = True
+        self.update()
+
+    def getValueColor(self) -> Color:
+        return self._color
+
+    def paintEvent(self, e: QPaintEvent) -> None:
+        if self.dirty:
+            isize = self.iconSize()
+            pix = QPixmap(isize)
+            pix.fill(self.palette().button().color())
+            p = QPainter(pix)
+            w = pix.width()
+            h = pix.height()
+            p.setBrush(self._color)
+            p.fillRect(0, 0, w, h, QBrush(self._color))
+            p.setPen(QPen(Qt.gray))
+            p.drawRect(0, 0, w - 1, h - 1)
+            p.end()
+            self.setIcon(QIcon(pix))
+            self.dirty = False
+
+        super().paintEvent(e)
+
+
+def InputColor(
+    value: str = "rgba(0,0,0,255)",
+    *,
+    name: str | None = None,
+    label: QWidget | str = None,
+    stretch: int = 0,
+    alignment: Qt.Alignment = DEFAULT_ALIGNMENT,
+    add: bool = True,
+    **kwargs: KwArgs,
+) -> InputColorWidget:
+    widget = InputColorWidget(value=value)
+    set_qt_attrs(widget, **kwargs)
+
+    if name:
+        widget.setObjectName(name)
+
+    def trigger() -> None:
+        if color := choose_color(caption=label or "Choose Color", initial=widget.getValueColor()):
+            widget.setValue(Color(color))
+
+    widget.clicked.connect(trigger)
+    if add:
+        place_widget(widget, label=label, stretch=stretch, alignment=alignment)
+
+    return widget
+
+
+update_wrapper(InputColor, button)
+
+
+##% [Widget] TaskPanel
+##% ────────────────────────────────────────────────────────────────────────────
+class TaskPanelAdapter(QObject):
+    """Adapter for Task Panels."""
+
+    def __init__(self, view: TaskPanel, parent: QObject = None) -> None:
+        super().__init__(parent)
+        self.view = view
+        self.form = view.build()
+
+    def deactivate(self, *, recompute: bool = False) -> None:
+        if (doc := App.ActiveDocument) and recompute:
+            doc.recompute()
+            App.Gui.ActiveDocument.resetEdit()
+        if App.Gui.Control.activeDialog():
+            App.Gui.Control.closeDialog()
+        self.view.on_close()
+
+    def accept(self) -> None:
+        self.view.on_accept()
+        self.deactivate(recompute=True)
+
+    def reject(self) -> None:
+        self.view.on_reject()
+        self.deactivate()
+
+
+class TaskPanel:
+    """TaskPanel base class."""
+
+    dialog: TaskPanelAdapter = None
+
+    def build(self) -> QWidget:
+        raise NotImplementedError
+
+    def on_accept(self) -> None:
+        pass
+
+    def on_reject(self) -> None:
+        pass
+
+    def on_close(self) -> None:
+        pass
+
+    def show(self) -> None:
+        self.close()
+        self.dialog = TaskPanelAdapter(self)
+        App.Gui.Control.showDialog(self.dialog)
+
+    def close(self) -> None:
+        if self.dialog:
+            self.dialog.deactivate()
+            self.dialog = None
+        if App.Gui.Control.activeDialog():
+            App.Gui.Control.closeDialog()
+
+
 ##: [SECTION] Utility functions
 ##: ────────────────────────────────────────────────────────────────────────────
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+def set_indicator_icon(
+    widget: QWidget,
+    icon: str | QIcon | None,
+    pos: QLineEdit.ActionPosition | None = None,
+) -> None:
+    """Adds an icon to a QLineEdit or any widget that has lineEdit() method."""
+    target = None
+    if isinstance(widget, QLineEdit):
+        target = widget
+    elif lineEdit := getattr(widget, "lineEdit", None):
+        target = lineEdit()
+
+    if not target:
+        return
+
+    if old := getattr(widget, "_fcapi_icon", None):
+        target.removeAction(old)
+        widget._fcapi_icon = None  # noqa: SLF001
+
+    if isinstance(icon, QIcon):
+        widget._fcapi_icon = target.addAction(icon, pos or QLineEdit.LeadingPosition)  # noqa: SLF001
+    elif isinstance(icon, str):
+        widget._fcapi_icon = target.addAction(  # noqa: SLF001
+            QIcon.fromTheme(icon),
+            pos or QLineEdit.LeadingPosition,
+        )
+    else:
+        return
+
+    def clear(*_args) -> None:
+        target.textEdited.disconnect(clear)
+        target.removeAction(widget._fcapi_icon)  # noqa: SLF001
+        widget._fcapi_icon = None  # noqa: SLF001
+
+    target.textEdited.connect(clear)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -2439,6 +2834,19 @@ def update_style(widget: QWidget) -> None:
     style.unpolish(widget)
     style.polish(widget)
     widget.update()
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+def choose_color(
+    caption: str | None = None,
+    initial: QColor | None = None,
+) -> QColor | None:
+    color = QColorDialog.getColor(
+        initial=initial or Qt.white,
+        title=caption,
+        options=QColorDialog.ColorDialogOption.ShowAlphaChannel,
+    )
+    return color if color.isValid() else None
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -2511,6 +2919,36 @@ def show_info(
     diag.setText(str(message))
     diag.setStandardButtons(std_buttons)
     diag.open()
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+def confirm(
+    question: str,
+    *,
+    title: str | None = None,
+    description: str | None = None,
+    std_icon: Any = QMessageBox.Question,
+    std_buttons: Any = QMessageBox.Yes | QMessageBox.No,
+    parent: QWidget | None = None,
+) -> bool:
+    """Basic Message Box."""
+    diag = QMessageBox(parent or find_active_window())
+    diag.setIcon(std_icon)
+    diag.setWindowTitle(str(title) if title else _tr_question)
+    diag.setText(str(question))
+    diag.setStandardButtons(std_buttons)
+    diag.setWindowModality(Qt.WindowModality.ApplicationModal)
+    if description:
+        diag.setInformativeText(str(description))
+    diag.exec()
+    ret = diag.buttonRole(diag.clickedButton())
+    roles = QMessageBox.ButtonRole
+    return ret in {
+        roles.AcceptRole,
+        roles.ActionRole,
+        roles.ApplyRole,
+        roles.YesRole,
+    }
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -2671,6 +3109,7 @@ _tr_working = _tr("Working...")
 _tr_open = _tr("Open")
 _tr_save = _tr("Save")
 _tr_information = _tr("Information")
+_tr_question = _tr("Question")
 _tr_warning = _tr("Warning")
 _tr_select = _tr("Select...")
 
