@@ -558,7 +558,8 @@ class Property(Generic[_PT]):
     description: str  # GUI description
     mode: PropertyMode  # PropertyEditor mode for the property
     enum: type[Enum]  # Type of enum used by "App::PropertyEnumeration"
-    options: Callable  # Callable that provides a list of options
+    options: Callable  # Callable that provides a list of options, either
+                       # as options() or options(obj)
 
     # ──────────
     def __init__(  # noqa: D107
@@ -608,7 +609,10 @@ class Property(Generic[_PT]):
             if self.enum:
                 setattr(fp, self.name, [str(e.value) for e in list(self.enum)])
             elif self.options:
-                setattr(fp, self.name, self.options())
+                if _f_arity(self.options) == 0:
+                    setattr(fp, self.name, self.options())
+                else:
+                    setattr(fp, self.name, self.options(fp))
             self.reset(fp)
 
     # ──────────
