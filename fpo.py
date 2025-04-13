@@ -14,7 +14,7 @@ from __future__ import annotations
 __author__ = "Frank David Martínez Muñoz"
 __copyright__ = "(c) 2024 Frank David Martínez Muñoz."
 __license__ = "LGPL 2.1"
-__version__ = "1.0.0-beta5"
+__version__ = "1.0.0-beta6"
 __min_python__ = "3.10"
 __min_freecad__ = "0.22"
 
@@ -2075,6 +2075,10 @@ def t_view_proxy_dbl_click(_, meta: TypeMeta) -> GeneratedMethod:
 @template(name="onChanged", override_error_msg=f"Use {_ON_CHANGE} instead")
 def t_view_proxy_change(_, meta: TypeMeta) -> GeneratedMethod:
     def onChanged(self: Any, vp: ViewProviderDocumentObject, prop_name: str) -> None:
+        data_proxy = getattr(vp.Object, "Proxy", None)
+        if getattr(data_proxy, "__so_state__", None) != FeatureState.Active:
+            return
+
         new_value = getattr(vp, prop_name, None)
         meta.apply_extensions(self, vp, _ON_CHANGE, prop_name)
         prop = meta.property_lookup.get(prop_name, None)
