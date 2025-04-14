@@ -624,15 +624,19 @@ class Property(Generic[_PT]):
     # ──────────
     def update(self, obj: ObjectRef, value: _PT) -> None:
         """Set the value of the property in the remote object."""
-        if hasattr(obj, self.name):
-            if self.enum:
-                setattr(obj, self.name, str(value.value))
+        if not hasattr(obj, self.name):
+            return
+        if self.enum:
+            setattr(obj, self.name, str(value.value))
+            return
+        attr = getattr(obj, self.name)
+        if hasattr(attr, "Value"):
+            if isinstance(value, str):
+                attr.Value = App.Units.Quantity(value)
             else:
-                attr = getattr(obj, self.name)
-                if hasattr(attr, "Value"):
-                    attr.Value = value
-                else:
-                    setattr(obj, self.name, value)
+                attr.Value = value
+            return
+            setattr(obj, self.name, value)
 
     # ──────────
     def read(self, obj: ObjectRef) -> _PT:
