@@ -636,7 +636,7 @@ class Property(Generic[_PT]):
             else:
                 attr.Value = value
             return
-            setattr(obj, self.name, value)
+        setattr(obj, self.name, value)
 
     # ──────────
     def read(self, obj: ObjectRef) -> _PT:
