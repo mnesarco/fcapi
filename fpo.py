@@ -1394,6 +1394,7 @@ def proxy(  # noqa: ANN201
         t_dumps(meta)
         t_proxy_view_provider_name_override(meta)
         t_proxy_dirty(meta)
+        t_proxy_is_active(meta)
         return cls
 
     return transformer
@@ -1905,6 +1906,17 @@ def t_proxy_view_provider_name_override(_, meta: TypeMeta) -> GeneratedMethod:
 
         return getViewProviderName
     return None
+
+
+##$ ────────────────────────────────────────────────────────────────────────────
+@template(name="is_active", allow_override=True)
+def t_proxy_is_active(overridden: Any, meta: TypeMeta) -> GeneratedMethod:
+    if overridden:
+        return overridden
+
+    def is_active(self: Any) -> bool:
+        return getattr(self, '__so_state__', None) == FeatureState.Active
+    return is_active
 
 
 ##$ ┌───────────────────────────────────────────────────────────────────────────┐
