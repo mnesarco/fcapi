@@ -484,10 +484,10 @@ class PropertyStatus(_DocIntEnum):
     PartialTrigger = 10,     "allow change in partial doc"
     NoRecompute = 11,        "don't touch owner for recompute on property change"
     Single = 12,             "for save/load of floating point numbers"
-    Ordered = 13,            "for PropertyLists whether the order of the elements is relevant for the container using it"
-    EvalOnRestore = 14,      "In case of expression binding, evaluate the expression on restore and touch the object on value change."
+    Ordered = 13,            "for PropertyLists whether the order of the elements is relevant for the container using it"  # noqa: E501
+    EvalOnRestore = 14,      "In case of expression binding, evaluate the expression on restore and touch the object on value change."  # noqa: E501
     Busy = 15,               "internal use to avoid recursive signaling"
-    CopyOnChange = 16,       "for Link to copy the linked object on change of the property with this flag"
+    CopyOnChange = 16,       "for Link to copy the linked object on change of the property with this flag"  # noqa: E501
     UserEdit = 17,           "cause property editor to create button for user defined editing"
 
     # The following bits are corresponding to PropertyType set when the
@@ -672,19 +672,19 @@ class Property(Generic[_PT]):
 
     if TYPE_CHECKING:
         # This fake typing here is to allow code completion to infer the property type
-        def __get__(self, obj, obj_type=None) -> _PT: ...  # noqa: ANN001
-        def __set__(self, obj, value: _PT) -> None: ...  # noqa: ANN001
+        def __get__(self, obj, obj_type=None) -> _PT: ...  # noqa: ANN001, D105
+        def __set__(self, obj, value: _PT) -> None: ...  # noqa: ANN001, D105
 
 
 ##% ────────────────────────────────────────────────────────────────────────────
 class PropertyMeta:
-    """Property metadata proxy"""
+    """Property metadata proxy."""
 
     prop: Property
     target: ObjectRef
 
     def __init__(self, property: Property, target: ObjectRef) -> None:
-        """Bounded property proxy to ObjectRef"""
+        """Bounded property proxy to ObjectRef."""
         self.prop = property
         self.target = target
 
@@ -1113,6 +1113,7 @@ class PreferencePreset:
     preset: str
 
     def __post_init__(self) -> None:
+        """Sanitize preset name."""
         if "/" in self.preset:
             self.preset = self.preset.replace("/", "-")
 
@@ -1910,12 +1911,12 @@ def t_proxy_view_provider_name_override(_, meta: TypeMeta) -> GeneratedMethod:
 
 ##$ ────────────────────────────────────────────────────────────────────────────
 @template(name="is_active", allow_override=True)
-def t_proxy_is_active(overridden: Any, meta: TypeMeta) -> GeneratedMethod:
+def t_proxy_is_active(overridden: Any, _: TypeMeta) -> GeneratedMethod:
     if overridden:
         return overridden
 
     def is_active(self: Any) -> bool:
-        return getattr(self, '__so_state__', None) == FeatureState.Active
+        return getattr(self, "__so_state__", None) == FeatureState.Active
     return is_active
 
 
