@@ -17,6 +17,7 @@ __license__ = "LGPL 2.1"
 __version__ = "1.0.0-beta6"
 __min_python__ = "3.10"
 __min_freecad__ = "0.22"
+__contributors__ = "Gaël Écorchard"
 
 
 # Conventions for sections in this file:
