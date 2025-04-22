@@ -2,10 +2,10 @@
 author: "Frank David Martínez Muñoz"
 copyright: "(c) 2024 Frank David Martínez Muñoz."
 license: "LGPL 2.1"
-version: "1.0.0-beta4"
+version: "1.0.0-beta5"
 min_python: "3.10"
 min_freecad: "0.22"
-date: "2024-12-04 16:48:18.686855"
+date: "2025-04-22 08:45:55.421395"
 geometry: "margin=2cm"
 ---
 
@@ -14,11 +14,11 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2024-12-04 16:48:18.696733                        |
+| __generated__     | 2025-04-22 08:45:55.432739                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
-| __version__       | 1.0.0-beta4                                       |
+| __version__       | 1.0.0-beta5                                       |
 | __min_python__    | 3.10                                              |
 | __min_freecad__   | 0.22                                              |
 
@@ -153,13 +153,14 @@ understanding of the basic usage of it.
 
 ```python
 def Dialog(
-        title: str=None, 
+        title: str | None=None, 
         *, 
-        size: Tuple[int, int]=None, 
+        size: tuple[int, int] | None=None, 
         show: bool=True, 
         modal: bool=True, 
         parent: QWidget=None, 
-        **kwargs
+        **
+        kwargs: KwArgs
     ) -> Generator[QDialog, Any, Any]: ...
 ```
 
@@ -178,11 +179,11 @@ def Dialog(
 | Argument       | Type           | Description                                |
 |----------------|----------------|--------------------------------------------|
 | title          | str            | window title, defaults to None             |
-| size           | Tuple[int, int]| dialog size, defaults to None              |
+| size           | tuple[int, int]| dialog size, defaults to None              |
 | show           | bool           | show automatically, defaults to True       |
 | modal          | bool           | window modality, defaults to True          |
 | parent         | QWidget        | parent widget, defaults to None            |
-| **kwargs       | Dict[str, Any] | Qt properties                              |
+| **kwargs       | dict[str, Any] | Qt properties                              |
 
 
 Dialog context manager/widget.
@@ -204,7 +205,12 @@ def demo_Dialog():
 #### Signature / Scroll
 
 ```python
-def Scroll(*, add: bool=True, **kwargs) -> Generator[QScrollArea, Any, Any]: ...
+def Scroll(
+        *, 
+        add: bool=True, 
+        **
+        kwargs: KwArgs
+    ) -> Generator[QScrollArea, Any, Any]: ...
 ```
 
 
@@ -222,7 +228,7 @@ def Scroll(*, add: bool=True, **kwargs) -> Generator[QScrollArea, Any, Any]: ...
 | Argument       | Type           | Description                                |
 |----------------|----------------|--------------------------------------------|
 | add            | bool           | add to context, defaults to True           |
-| **kwargs       | Dict[str, Any] | Qt properties                              |
+| **kwargs       | dict[str, Any] | Qt properties                              |
 
 
 Scrollable area context manager/widget.
@@ -247,10 +253,11 @@ def demo_Scroll():
 
 ```python
 def GroupBox(
-        title: str=None, 
+        title: str | None=None, 
         *, 
         add: bool=True, 
-        **kwargs
+        **
+        kwargs: KwArgs
     ) -> Generator[QGroupBox, Any, Any]: ...
 ```
 
@@ -271,7 +278,7 @@ def GroupBox(
 | title          | str            | Group title, defaults to None              |
 | add            | bool           | add to context, defaults to True           |
 | add            | bool           | add to context, defaults to True           |
-| **kwargs       | Dict[str, Any] | Qt properties                              |
+| **kwargs       | dict[str, Any] | Qt properties                              |
 
 
 GroupBox context manager/widget.
@@ -297,7 +304,13 @@ def demo_GroupBox():
 #### Signature / Container
 
 ```python
-def Container(*, add: bool=True, **kwargs) -> Generator[QFrame, Any, Any]: ...
+def Container(
+        *, 
+        add: bool=True, 
+        top: bool=False, 
+        **
+        kwargs: KwArgs
+    ) -> Generator[QFrame, Any, Any]: ...
 ```
 
 
@@ -311,7 +324,7 @@ def Container(*, add: bool=True, **kwargs) -> Generator[QFrame, Any, Any]: ...
 | Argument       | Type           | Description                                |
 |----------------|----------------|--------------------------------------------|
 | add            | bool           | add to context, defaults to True           |
-| **kwargs       | Dict[str, Any] | Qt properties                              |
+| **kwargs       | dict[str, Any] | Qt properties                              |
 
 
 Simple container context/widget.
@@ -339,7 +352,8 @@ def TabContainer(
         *, 
         stretch: int=0, 
         add: bool=True, 
-        **kwargs
+        **
+        kwargs: KwArgs
     ) -> Generator[QTabWidget, Any, Any]: ...
 ```
 
@@ -359,7 +373,7 @@ def TabContainer(
 |----------------|----------------|--------------------------------------------|
 | stretch        | int            | stretch, defaults to 0                     |
 | add            | bool           | add to the context, defaults to True       |
-| **kwargs       | Dict[str, Any] | Qt properties                              |
+| **kwargs       | dict[str, Any] | Qt properties                              |
 
 
 Tab Container context/widget
@@ -391,7 +405,8 @@ def Tab(
         *, 
         icon: QIcon=None, 
         add: bool=True, 
-        **kwargs
+        **
+        kwargs: KwArgs
     ) -> Generator[QWidget, Any, Any]: ...
 ```
 
@@ -408,7 +423,7 @@ def Tab(
 | title          | str            | Tab's title                                |
 | icon           | QIcon          | Icon, defaults to None                     |
 | add            | bool           | add to the context, defaults to True       |
-| **kwargs       | Dict[str, Any] | Qt properties                              |
+| **kwargs       | dict[str, Any] | Qt properties                              |
 
 
 Tab widget/context in a tab container
@@ -434,7 +449,7 @@ def demo_TabContainer():
 #### Signature / Splitter
 
 ```python
-def Splitter(*, add=True, **kwargs) -> Generator[QSplitter, Any, Any]: ...
+def Splitter(*, add: bool=True, **kwargs: KwArgs) -> Generator[QSplitter, Any, Any]: ...
 ```
 
 
@@ -452,7 +467,7 @@ def Splitter(*, add=True, **kwargs) -> Generator[QSplitter, Any, Any]: ...
 | Argument       | Type           | Description                                |
 |----------------|----------------|--------------------------------------------|
 | add            | bool           | add to current context, defaults to True   |
-| **kwargs       | Dict[str, Any] | Qt properties                              |
+| **kwargs       | dict[str, Any] | Qt properties                              |
 
 
 Split context/container
@@ -479,7 +494,7 @@ def demo_Splitter():
 #### Signature / Col
 
 ```python
-def Col(*, add: bool=True, **kwargs) -> Generator[QWidget, Any, Any]: ...
+def Col(*, add: bool=True, **kwargs: KwArgs) -> Generator[QWidget, Any, Any]: ...
 ```
 
 
@@ -497,7 +512,7 @@ def Col(*, add: bool=True, **kwargs) -> Generator[QWidget, Any, Any]: ...
 | Argument       | Type           | Description                                |
 |----------------|----------------|--------------------------------------------|
 | add            | bool           | add to current context, defaults to True   |
-| **kwargs       | Dict[str, Any] | Qt properties                              |
+| **kwargs       | dict[str, Any] | Qt properties                              |
 
 
 Vertical context/layout
@@ -526,7 +541,7 @@ def demo_Col():
 #### Signature / Row
 
 ```python
-def Row(*, add: bool=True, **kwargs): ...
+def Row(*, add: bool=True, **kwargs: KwArgs) -> Generator[QWidget, None, None]: ...
 ```
 
 
@@ -544,7 +559,7 @@ def Row(*, add: bool=True, **kwargs): ...
 | Argument       | Type           | Description                                |
 |----------------|----------------|--------------------------------------------|
 | add            | bool           | add to current context, defaults to True   |
-| **kwargs       | Dict[str, Any] | Qt properties                              |
+| **kwargs       | dict[str, Any] | Qt properties                              |
 
 
 Horizontal context/layout
@@ -580,9 +595,10 @@ def TextLabel(
         text: str='', 
         *, 
         stretch: int=0, 
-        alignment: Qt.Alignment=Qt.Alignment(), 
+        alignment: Qt.Alignment=DEFAULT_ALIGNMENT, 
         add: bool=True, 
-        **kwargs
+        **
+        kwargs: KwArgs
     ) -> QLabel: ...
 ```
 
@@ -604,10 +620,10 @@ def TextLabel(
 | stretch        | int            | layout stretch, defaults to 0              |
 | alignment      | Qt.Alignment   | layout alignment, defaults to Qt.Alignment()|
 | add            | bool           | add to current context, defaults to True   |
-| **kwargs       | Dict[str, Any] | Qt properties of QLabel                    |
+| **kwargs       | dict[str, Any] | Qt properties of QLabel                    |
 
 
-Simple text label widget
+Simple text label widget.
 
 Example:
 > *../examples/ui/widgets.py* (TextLabel)
@@ -628,17 +644,18 @@ def demo_TextLabel():
 ```python
 def Html(
         *, 
-        html: str=None, 
-        file: str=None, 
-        css: str=None, 
-        css_file: str=None, 
-        base_path: str=None, 
-        background: str=None, 
+        html: str | None=None, 
+        file: str | None=None, 
+        css: str | None=None, 
+        css_file: str | None=None, 
+        base_path: str | None=None, 
+        background: str | None=None, 
         stretch: int=0, 
-        alignment: Qt.Alignment=Qt.Alignment(), 
-        variables: Dict[str, Any]=None, 
+        alignment: Qt.Alignment=DEFAULT_ALIGNMENT, 
+        variables: dict[str, Any] | None=None, 
         add: bool=True, 
-        **kwargs
+        **
+        kwargs: KwArgs
     ) -> HtmlWidget: ...
 ```
 
@@ -664,12 +681,12 @@ def Html(
 | background     | str            | background color code, defaults to None    |
 | stretch        | int            | layout stretch, defaults to 0              |
 | alignment      | Qt.Alignment   | layout alignment, defaults to Qt.Alignment()|
-| variables      | Dict[str, Any] | interpolation variables, defaults to None  |
+| variables      | dict[str, Any] | interpolation variables, defaults to None  |
 | add            | bool           | add to current context, defaults to True   |
-| **kwargs       | Dict[str, Any] | Qt properties of QLabel                    |
+| **kwargs       | dict[str, Any] | Qt properties of QLabel                    |
 
 
-Basic HTML Render widget
+Basic HTML Render widget.
 
 Example:
 > *../examples/ui/widgets.py* (Html)
@@ -692,7 +709,7 @@ def demo_Html():
                 <p>
                 <strong>Be Happy!!</strong>
                 </p>
-                """
+                """,
             )
 
 ```
@@ -705,11 +722,12 @@ def demo_Html():
 def ImageView(
         uri: str, 
         *, 
-        label: str=None, 
-        name: str=None, 
-        background: Union[str, QColor]=None, 
+        label: str | None=None, 
+        name: str | None=None, 
+        background: str | QColor | None=None, 
         add: bool=True, 
-        **kwargs
+        **
+        kwargs: KwArgs
     ) -> ImageViewWidget: ...
 ```
 
@@ -734,7 +752,7 @@ def ImageView(
 | add            | bool           | _description_, defaults to True            |
 
 
-Image render widget
+Image render widget.
 
 Example:
 > *../examples/ui/widgets.py* (ImageView)
@@ -745,7 +763,7 @@ def demo_ImageView():
     with ui.Dialog("ImageView", size=(400, 300)):
         with ui.Col():
             ui.ImageView(
-                str(Path(__file__).parent / 'image.png')
+                str(Path(__file__).parent / "image.png"),
             )
 
 ```
@@ -757,9 +775,13 @@ def demo_ImageView():
 ```python
 def SvgImageView(
         uri: str, 
-        name: str=None, 
-        label: str=None, stretch=0, alignment=Qt.Alignment(), 
-        **kwargs
+        label: str | None=None, 
+        *, 
+        name: str | None=None, 
+        stretch: int=0, 
+        alignment: Qt.Alignment=DEFAULT_ALIGNMENT, 
+        **
+        kwargs: KwArgs
     ) -> SvgImageViewWidget: ...
 ```
 
@@ -781,7 +803,7 @@ def SvgImageView(
 | name           | str            | Widget name, defaults to None              |
 
 
-High resolution Svg Image box
+High resolution Svg Image box.
 
 Example:
 > *../examples/ui/widgets.py* (SvgImageView)
@@ -792,7 +814,7 @@ def demo_SvgImageView():
     with ui.Dialog("SvgImageView"):
         with ui.Col():
             ui.SvgImageView(
-                str(Path(__file__).parent / 'vector.svg')
+                str(Path(__file__).parent / "vector.svg"),
             )
 
 ```
@@ -803,14 +825,15 @@ def demo_SvgImageView():
 
 ```python
 def Table(
-        headers: List[str], 
-        rows: List[List[Any]], 
+        headers: list[str], 
+        rows: list[list[Any]], 
         *, 
-        name: str=None, 
+        name: str | None=None, 
         stretch: int=0, 
-        alignment: Qt.Alignment=Qt.Alignment(), 
+        alignment: Qt.Alignment=DEFAULT_ALIGNMENT, 
         add: bool=True, 
-        **kwargs
+        **
+        kwargs: KwArgs
     ) -> TableWidget: ...
 ```
 
@@ -828,15 +851,15 @@ def Table(
 
 | Argument       | Type           | Description                                |
 |----------------|----------------|--------------------------------------------|
-| headers        | List[str]      | column headers                             |
-| rows           | List[List[Any]]| data                                       |
+| headers        | list[str]      | column headers                             |
+| rows           | list[list[Any]]| data                                       |
 | name           | str            | objectName, defaults to None               |
 | stretch        | int            | layout stretch, defaults to 0              |
 | alignment      | Qt.Alignment   | layout alignment, defaults to Qt.Alignment()|
 | add            | bool           | add to current context, defaults to True   |
 
 
-Simple Table output widget
+Simple Table output widget.
 
 Example:
 > *../examples/ui/widgets.py* (Table)
@@ -847,13 +870,13 @@ def demo_Table():
     with ui.Dialog("Table"):
         with ui.Col():
             ui.Table(
-                headers=('Length', '^Width', '>Height'),
+                headers=("Length", "^Width", ">Height"),
                 rows=[
                     [21, 34, 56],
                     [65, 87, 98],
                     [21, 32, 54],
                     [65, 76, 87],
-                ]
+                ],
             )
 
 ```
@@ -866,12 +889,13 @@ def demo_Table():
 def Canvas(
         paint: Callable[[QWidget, QPainter, QPaintEvent], None], 
         *, 
-        setup: Callable[[QWidget, QPainter, QPaintEvent], None]=None, 
-        name: str=None, 
+        setup: Callable[[QWidget, QPainter, QPaintEvent], None] | None=None, 
+        name: str | None=None, 
         stretch: int=0, 
         width: int=0, 
         height: int=0, 
-        **kwargs
+        **
+        kwargs: KwArgs
     ) -> CanvasWidget: ...
 ```
 
@@ -890,14 +914,14 @@ def Canvas(
 | Argument       | Type           | Description                                |
 |----------------|----------------|--------------------------------------------|
 | paint          | Callable[[QWidget, QPainter, QPaintEvent], None]| function to paint                          |
-| setup          | Callable[[QWidget, QPainter, QPaintEvent], None]| function to setup canvas, defaults to None |
+| setup          | Callable[[QWidget, QPainter, QPaintEvent], None]| function to setup canvas                   |
 | name           | str            | objectName, defaults to None               |
 | stretch        | int            | layout stretch, defaults to 0              |
 | width          | int            | minimum width, defaults to 0               |
 | height         | int            | minimum height, defaults to 0              |
 
 
-Canvas Widget to allow custom painting
+Canvas Widget to allow custom painting.
 
 Example:
 > *../examples/ui/widgets.py* (Canvas)
@@ -906,7 +930,7 @@ Example:
 ```python
 def demo_Canvas():
 
-    def render(widget: QWidget, qp: QPainter, ch: ui.CanvasHelper):
+    def render(_widget: QWidget, qp: QPainter, ch: ui.CanvasHelper):
         for i in range(10):
             with ch.pen(color=Qt.red, width=1):
                 qp.drawRect(QRect(i*10, i*10, 50, 50))
@@ -930,12 +954,13 @@ def demo_Canvas():
 def InputBoolean(
         value: bool=False, 
         *, 
-        name: str=None, 
-        label: Union[QWidget, str]=None, 
+        name: str | None=None, 
+        label: QWidget | str=None, 
         stretch: int=0, 
-        alignment: Qt.Alignment=Qt.Alignment(), 
+        alignment: Qt.Alignment=DEFAULT_ALIGNMENT, 
         add: bool=True, 
-        **kwargs
+        **
+        kwargs: KwArgs
     ) -> QCheckBoxExt: ...
 ```
 
@@ -959,10 +984,10 @@ def InputBoolean(
 | stretch        | int            | layout stretch, defaults to 0              |
 | alignment      | Qt.Alignment   | layout alignment, defaults to Qt.Alignment()|
 | add            | bool           | add to the gui, defaults to True           |
-| **kwargs       | Dict[str, Any] | settable QCheckBox properties              |
+| **kwargs       | dict[str, Any] | settable QCheckBox properties              |
 
 
-Input boolean widget as QCheckBox
+Input boolean widget as QCheckBox.
 
 Example:
 > *../examples/ui/widgets.py* (InputBoolean)
@@ -987,15 +1012,16 @@ def demo_InputBoolean():
 def InputInt(
         value: int=0, 
         *, 
-        name: str=None, 
+        name: str | None=None, 
         min: int=0, 
-        max: int=None, 
+        max: int | None=None, 
         step: int=1, 
-        label: Union[QWidget, str]=None, 
+        label: QWidget | str=None, 
         stretch: int=0, 
-        alignment: Qt.Alignment=Qt.Alignment(), 
+        alignment: Qt.Alignment=DEFAULT_ALIGNMENT, 
         add: bool=True, 
-        **kwargs
+        **
+        kwargs: KwArgs
     ) -> QSpinBox: ...
 ```
 
@@ -1022,10 +1048,10 @@ def InputInt(
 | stretch        | int            | layout stretch, defaults to 0              |
 | alignment      | Qt.Alignment   | layout alignment, defaults to Qt.Alignment()|
 | add            | bool           | add to current context, defaults to True   |
-| **kwargs       | Dict[str, Any] | Qt properties                              |
+| **kwargs       | dict[str, Any] | Qt properties                              |
 
 
-Input int widget
+Input int widget.
 
 Example:
 > *../examples/ui/widgets.py* (InputInt)
@@ -1050,16 +1076,17 @@ def demo_InputInt():
 def InputFloat(
         value: float=0.0, 
         *, 
-        name: str=None, 
+        name: str | None=None, 
         min: float=0.0, 
         max: float=sys.float_info.max, 
         decimals: int=6, 
         step: float=0.01, 
-        label: Union[QWidget, str]=None, 
+        label: QWidget | str | None=None, 
         stretch: int=0, 
-        alignment: Qt.Alignment=Qt.Alignment(), 
+        alignment: Qt.Alignment=DEFAULT_ALIGNMENT, 
         add: bool=True, 
-        **kwargs
+        **
+        kwargs: KwArgs
     ) -> QDoubleSpinBox: ...
 ```
 
@@ -1087,10 +1114,10 @@ def InputFloat(
 | stretch        | int            | layout stretch, defaults to 0              |
 | alignment      | Qt.Alignment   | layout alignment, defaults to Qt.Alignment()|
 | add            | bool           | add to current context, defaults to True   |
-| **kwargs       | Dict[str, Any] | Qt properties                              |
+| **kwargs       | dict[str, Any] | Qt properties                              |
 
 
-Input float widget
+Input float widget.
 
 Example:
 > *../examples/ui/widgets.py* (InputFloat)
@@ -1113,16 +1140,18 @@ def demo_InputFloat():
 
 ```python
 def InputFloatList(
-        values: List[float]=None, 
-        label: Union[QWidget, str]=None, 
-        name: str=None, 
-        label_fn: Callable[[int], str]=None, 
+        values: list[float] | None=None, 
+        label: QWidget | str | None=None, 
+        *, 
+        name: str | None=None, 
+        label_fn: Callable[[int], str] | None=None, 
         count: int=0, 
         resizable: bool=False, 
         min_count: int=0, 
         add: bool=True, 
-        **kwargs
-    ): ...
+        **
+        kwargs: KwArgs
+    ) -> InputFloatListWidget: ...
 ```
 
 
@@ -1139,7 +1168,7 @@ def InputFloatList(
 
 | Argument       | Type           | Description                                |
 |----------------|----------------|--------------------------------------------|
-| values         | List[float]    | initial values, defaults to None           |
+| values         | list[float]    | initial values, defaults to None           |
 | label          | Union[QWidget, str]| ui label, defaults to None                 |
 | name           | str            | objectName, defaults to None               |
 | label_fn       | Callable[[int], str]| label provider (for custom row labels), defaults to None|
@@ -1147,7 +1176,7 @@ def InputFloatList(
 | resizable      | bool           | allow resizing the list, defaults to False |
 | min_count      | int            | minimum number of rows, defaults to 0      |
 | add            | bool           | add to the gui, defaults to True           |
-| **kwargs       | Dict[str, Any] | Qt properties                              |
+| **kwargs       | dict[str, Any] | Qt properties                              |
 
 
 Widget to accept lists of float numbers.
@@ -1180,18 +1209,19 @@ def demo_InputFloatList():
 def InputQuantity(
         value: Numeric=None, 
         *, 
-        name: str=None, 
+        name: str | None=None, 
         min: Numeric=None, 
         max: Numeric=None, 
         step: Numeric=1.0, 
-        label: Union[QWidget, str]=None, 
+        label: QWidget | str=None, 
         stretch: int=0, 
-        alignment: Qt.Alignment=Qt.Alignment(), 
-        unit: str=None, 
-        obj: object=None, 
-        property: str=None, 
+        alignment: Qt.Alignment=DEFAULT_ALIGNMENT, 
+        unit: str | None=None, 
+        obj: object | None=None, 
+        property: str | None=None, 
         add: bool=True, 
-        **kwargs
+        **
+        kwargs: KwArgs
     ) -> InputQuantityWidget: ...
 ```
 
@@ -1221,7 +1251,7 @@ def InputQuantity(
 | obj            | DocumentObject | Object to bind the expression engine, defaults to None|
 | property       | str            | Property name of the bounded DocumentObject if any, defaults to None|
 | add            | bool           | Add to current context, defaults to True   |
-| **kwargs       | Dict[str, Any] | Qt properties                              |
+| **kwargs       | dict[str, Any] | Qt properties                              |
 
 
 Input Quantity Widget with unit and expressions support.
@@ -1243,7 +1273,7 @@ def demo_InputQuantity():
         )
 
         quantity2 = ui.InputQuantity(
-            value=5.0, label="Length Free:", unit="in", alignment=Qt.AlignCenter
+            value=5.0, label="Length Free:", unit="in", alignment=Qt.AlignCenter,
         )
 
         @ui.button("Print")
@@ -1258,8 +1288,8 @@ def demo_InputQuantity():
 
 ```python
 def InputVector(
-        label: Union[QWidget, str]=None, 
-        value: Union[Tuple, Vector]=(0.0, 0.0, 0.0)
+        label: QWidget | str | None=None, 
+        value: tuple | Vector=(0.0, 0.0, 0.0)
     ) -> InputVectorWrapper: ...
 ```
 
@@ -1278,7 +1308,7 @@ def InputVector(
 | Argument       | Type           | Description                                |
 |----------------|----------------|--------------------------------------------|
 | label          | Union[QWidget, str]| ui label, defaults to None                 |
-| value          | Union[Tuple, Vector]| vector value, defaults to (0.0, 0.0, 0.0)  |
+| value          | Union[tuple, Vector]| vector value, defaults to (0.0, 0.0, 0.0)  |
 
 
 Widget to accept a vector.
@@ -1307,12 +1337,13 @@ def demo_InputVector():
 def InputText(
         value: str='', 
         *, 
-        name: str=None, 
-        label: Union[QWidget, str]=None, 
+        name: str | None=None, 
+        label: QWidget | str=None, 
         stretch: int=0, 
-        alignment: Qt.Alignment=Qt.Alignment(), 
+        alignment: Qt.Alignment=DEFAULT_ALIGNMENT, 
         add: bool=True, 
-        **kwargs
+        **
+        kwargs: KwArgs
     ) -> InputTextWidget: ...
 ```
 
@@ -1336,10 +1367,10 @@ def InputText(
 | stretch        | int            | layout stretch, defaults to 0              |
 | alignment      | Qt.Alignment   | layout alignment, defaults to Qt.Alignment()|
 | add            | bool           | add to current context, defaults to True   |
-| **kwargs       | Dict[str, Any] | Qt properties                              |
+| **kwargs       | dict[str, Any] | Qt properties                              |
 
 
-Input text widget
+Input text widget.
 
 Example:
 > *../examples/ui/widgets.py* (InputText)
@@ -1362,13 +1393,16 @@ def demo_InputText():
 
 ```python
 def InputOptions(
-        options: Dict[str, Hashable], 
+        options: dict[str, Hashable], 
         value: Hashable=None, 
-        label: str=None, 
-        name: str=None, 
+        label: str | None=None, 
+        *, 
+        name: str | None=None, 
         stretch: int=0, 
-        alignment: Qt.Alignment=Qt.Alignment(), 
-        **kwargs
+        alignment: Qt.Alignment=DEFAULT_ALIGNMENT, 
+        add: bool=True, 
+        **
+        kwargs: KwArgs
     ) -> InputOptionsWidget: ...
 ```
 
@@ -1386,16 +1420,16 @@ def InputOptions(
 
 | Argument       | Type           | Description                                |
 |----------------|----------------|--------------------------------------------|
-| options        | Dict[str, Hashable]| label to value mapping                     |
+| options        | dict[str, Hashable]| label to value mapping                     |
 | value          | Hashable       | initial value, defaults to None            |
 | label          | str            | gui label, defaults to None                |
 | name           | str            | objectName, defaults to None               |
 | stretch        | int            | layout stretch, defaults to 0              |
 | alignment      | Qt.Alignment   | layout alignment, defaults to Qt.Alignment()|
-| **kwargs       | Dict[str, Any] | Qt properties                              |
+| **kwargs       | dict[str, Any] | Qt properties                              |
 
 
-ComboBox widget
+ComboBox widget.
 
 Example:
 > *../examples/ui/widgets.py* (InputOptions)
@@ -1427,11 +1461,12 @@ def demo_InputOptions():
 
 ```python
 def InputSelectOne(
-        label: str=None, 
-        name: str=None, 
+        label: str | None=None, 
+        *, 
+        name: str | None=None, 
         active: bool=False, 
         auto_deactivate: bool=True
-    ): ...
+    ) -> None: ...
 ```
 
 
@@ -1450,7 +1485,7 @@ def InputSelectOne(
 | auto_deactivate| bool           | _description_, defaults to True            |
 
 
-3D Selection widget. Allows to pick an object
+3D Selection widget. Allows to pick an object.
 
 Example:
 > *../examples/ui/widgets.py* (InputSelectOne)
@@ -1472,7 +1507,12 @@ def demo_InputSelectOne():
 #### Signature / InputSelectMany
 
 ```python
-def InputSelectMany(label: str=None, name: str=None, active: bool=False): ...
+def InputSelectMany(
+        label: str | None=None, 
+        *, 
+        name: str | None=None, 
+        active: bool=False
+    ) -> None: ...
 ```
 
 
@@ -1513,15 +1553,16 @@ def demo_InputSelectMany():
 
 ```python
 def button(
-        label: str=None, 
+        label: str | None=None, 
         *, 
         tool: bool=False, 
-        icon: Union[QIcon, str]=None, 
+        icon: QIcon | str | None=None, 
         stretch: int=0, 
-        alignment: Qt.Alignment=Qt.Alignment(), 
+        alignment: Qt.Alignment=DEFAULT_ALIGNMENT, 
         add: bool=True, 
-        **kwargs
-    ) -> QAbstractButton: ...
+        **
+        kwargs: KwArgs
+    ) -> Callable[[Callable[[], None]], QAbstractButton]: ...
 ```
 
 
@@ -1598,7 +1639,7 @@ def Stretch(stretch: int=0) -> None: ...
 | stretch        | int            | 0-100 stretch factor, defaults to 0        |
 
 
-Adds stretch factor to the current layout
+Add stretch factor to the current layout.
 ### Function: Spacing
 
 #### Signature / Spacing
