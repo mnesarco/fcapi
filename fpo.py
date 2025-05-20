@@ -14,7 +14,7 @@ from __future__ import annotations
 __author__ = "Frank David Martínez Muñoz"
 __copyright__ = "(c) 2024 Frank David Martínez Muñoz."
 __license__ = "LGPL 2.1"
-__version__ = "1.0.0-beta6"
+__version__ = "1.0.0-beta7"
 __min_python__ = "3.10"
 __min_freecad__ = "0.22"
 __contributors__ = "Gaël Écorchard"
@@ -631,9 +631,13 @@ class Property(Generic[_PT]):
             setattr(obj, self.name, str(value.value))
             return
         attr = getattr(obj, self.name)
-        if hasattr(attr, "Value"):
+        if isinstance(attr, App.Units.Quantity):
             if isinstance(value, str):
-                attr.Value = App.Units.Quantity(value)
+                setattr(obj, self.name, App.Units.Quantity(value))
+            elif isinstance(value, tuple):
+                setattr(obj, self.name, App.Units.Quantity(*value))
+            elif isinstance(value, App.Units.Quantity):
+                setattr(obj, self.name, value)
             else:
                 attr.Value = value
             return
