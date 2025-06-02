@@ -1139,18 +1139,18 @@ class Preference:
     group: str
     name: str
     default: Any = None
-    value_type: type = None
+    value_type: type | None = None
     root: str = "BaseApp"
     many: bool = False
-    label: str | None = None
-    description: str | None = None
+    label: Any = None
+    description: Any = None
     unit: str | None = None
-    options: dict[str, Hashable] | None = None
+    options: dict[Any, Hashable] | None = None
     parser: Callable[[str], Any] | None = None
     ui: str | None = None
-    ui_group: str | None = None
-    ui_page: str | None = None
-    ui_section: str | None = None
+    ui_group: Any = None
+    ui_page: Any = None
+    ui_section: Any = None
     ui_exclude: bool = False
     ui_validators: list[UIValidator] | None = None
 
