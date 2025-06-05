@@ -2318,7 +2318,8 @@ def Button(
     if add:
         place_widget(btn, stretch=stretch, alignment=alignment)
 
-    btn.clicked.connect(clicked)
+    if clicked:
+        btn.clicked.connect(clicked)
     return btn
 
 
