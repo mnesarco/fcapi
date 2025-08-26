@@ -32,6 +32,7 @@ __min_freecad__ = "0.22"
 ##: [SECTION] Builtin Imports
 ##: ────────────────────────────────────────────────────────────────────────────
 
+from contextlib import suppress
 import json
 import re
 import sys
@@ -410,10 +411,9 @@ class PySignal:
 
     def disconnect(self, listener: Callable) -> None:
         """Remove listener."""
-        try:
+        with suppress(KeyError):
+            # OK if not found.
             self._listeners.remove(listener)
-        except KeyError:
-            pass  # Not found, Ok
 
     def emit(self, *args: tuple, **kwargs: KwArgs) -> None:
         """Trigger the signal."""
@@ -637,7 +637,8 @@ class Dialogs:
     @classmethod
     def destroy_dialog(cls, dialog: QWidget) -> None:
         """Remove dialog and prepare for gc."""
-        cls._list.remove(dialog)
+        with suppress(ValueError):
+            cls._list.remove(dialog)
         dialog.deleteLater()
 
     @classmethod
