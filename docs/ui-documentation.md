@@ -5,7 +5,7 @@ license: "LGPL 2.1"
 version: "1.0.0-beta5"
 min_python: "3.10"
 min_freecad: "0.22"
-date: "2025-04-22 08:45:55.421395"
+date: "2025-12-24 09:12:00.182770"
 geometry: "margin=2cm"
 ---
 
@@ -14,7 +14,7 @@ geometry: "margin=2cm"
 
 | META              | VALUE                                             |
 |-------------------|---------------------------------------------------|
-| __generated__     | 2025-04-22 08:45:55.432739                        |
+| __generated__     | 2025-12-24 09:12:00.194208                        |
 | __author__        | Frank David Martínez Muñoz                        |
 | __copyright__     | (c) 2024 Frank David Martínez Muñoz.              |
 | __license__       | LGPL 2.1                                          |
@@ -161,7 +161,7 @@ def Dialog(
         parent: QWidget=None, 
         **
         kwargs: KwArgs
-    ) -> Generator[QDialog, Any, Any]: ...
+    ) -> Generator[DialogWidget, Any, Any]: ...
 ```
 
 
@@ -308,9 +308,10 @@ def Container(
         *, 
         add: bool=True, 
         top: bool=False, 
+        q_widget: type[QWidget] | None=None, 
         **
         kwargs: KwArgs
-    ) -> Generator[QFrame, Any, Any]: ...
+    ) -> Generator[QWidget, Any, Any]: ...
 ```
 
 
@@ -1217,9 +1218,13 @@ def InputQuantity(
         stretch: int=0, 
         alignment: Qt.Alignment=DEFAULT_ALIGNMENT, 
         unit: str | None=None, 
-        obj: object | None=None, 
+        obj: DocumentObject | None=None, 
         property: str | None=None, 
+        auto_apply: bool=True, 
         add: bool=True, 
+        widget_type: str='
+        Gui::InputField', 
+        accessor_adapter: PropertyAccessorAdapter | None=None, 
         **
         kwargs: KwArgs
     ) -> InputQuantityWidget: ...
@@ -1401,6 +1406,7 @@ def InputOptions(
         stretch: int=0, 
         alignment: Qt.Alignment=DEFAULT_ALIGNMENT, 
         add: bool=True, 
+        select_on_focus: bool=False, 
         **
         kwargs: KwArgs
     ) -> InputOptionsWidget: ...

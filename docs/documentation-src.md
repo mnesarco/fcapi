@@ -1404,6 +1404,10 @@ preference:
 #  Declare preferences wherever you want,
 #  but usually in some `preferences.py` module
 #  so you can reuse from everywhere.
+#  If you do not use `default`, you must use `value_type` (e.g. `value_type=int`)
+#  otherwise the default type is `str`.
+#  Beware, that there can exist multiple parameters in the same group and with the
+#  same name if they have different types, so setting the type is important.
 from fpo import Preference
 config_x = Preference(group="MyExtension/My Group", name="My Param X", default=10)
 config_y = Preference(group="MyExtension/My Group", name="My Param Y", default=10)
@@ -1419,9 +1423,9 @@ print(f"Y = {pref.config_y()}")
 print(f"Z = {pref.config_z()}")
 
 # write values
-pref.config_x(150)
-pref.config_y(100)
-pref.config_z(210)
+pref.config_x(update=150)
+pref.config_y(update=100)
+pref.config_z(update=210)
 
 # subscribe/observe to changes in preferences with listeners
 from fpo import Preference
